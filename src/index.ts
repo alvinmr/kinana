@@ -27,7 +27,7 @@ const start = (client:Client) => {
 
     client.onAddedToGroup(async (chat) => {
         let totMem = await chat.groupMetadata.participants.length
-        if (totMem >= 1) client.sendText(chat.groupMetadata.id, `Halo rakyat grup ${chat.contact.name}  terimakasih sudah menginvite bot ini, untuk melihat menu silahkan kirim *#menu*`)
+        if (totMem >= 1) client.sendText(chat.groupMetadata.id, `Halo rakyat grup ${chat.contact.name} terimakasih sudah menginvite bot ini, untuk melihat menu silahkan kirim *#menu*`)
     })
 
     client.onIncomingCall(( async (call) => {
@@ -44,7 +44,7 @@ function noCache(module, cb = (a) => {}){
     })    
 }
 
-function uncache(module = '.'){
+const uncache = (module = '.') => {
     return new Promise((resolve, reject) => {
         try {
             delete require.cache[require.resolve(module)]

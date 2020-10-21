@@ -1,7 +1,7 @@
 // import fs from 'fs';
 
 
-export const options = (headless, start) => {
+export function options (headless:boolean, start:any) {
     //  const chromePath = {
     //     win32: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe', // Windows 32 bit
     //     win64: 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe', // Windows 64 bit
