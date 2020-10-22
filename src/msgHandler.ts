@@ -1,8 +1,9 @@
 import { addFilter, color, isFiltered, processTime, isUrl } from '../utils/index'
-import { fetchJson } from "../utils/fetcher";
+import { trans } from "../utils/translate";
 import * as moment from 'moment-timezone'
-import { Client, decryptMedia } from '@open-wa/wa-automate';
+import { Client, decryptMedia, Message } from '@open-wa/wa-automate';
 import axios from 'axios';
+import * as Text from '../libs/texts/id'
 
 moment.tz.setDefault('Asia/Makassar').locale('id')
 
@@ -11,7 +12,7 @@ export const msgHandler = async (client:Client, message) => {
         const { type, id, from, t, sender, isGroupMsg, chat, caption, isMedia, mimetype, quotedMsg, quotedMsgObj, mentionedJidList } = message
         let { body } = message
         const { name, formattedTitle } = chat
-        let { pushname, verifiedName } = sender
+        let { pushname } = sender
         const commands = caption || body || ''
         const command = commands.toLowerCase().split(' ')[0] || ''
         const args =  commands.split(' ')
@@ -49,7 +50,7 @@ export const msgHandler = async (client:Client, message) => {
         const ownerNumber = '6289670455568@c.us'
         const isOwner = sender.id === ownerNumber
         const isBlocked = blockNumber.includes(sender.id) === true
-        const uaOverride = 'WhatsApp/2.2029.4 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'        
+        const uaOverride = 'WhatsApp/2.2029.4 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'                
         if (!isGroupMsg) console.log('\x1b[1;31m~\x1b[1;37m>', '[\x1b[1;32mMSG\x1b[1;37m]', time, color(msgs(command)), 'from', color(pushname))
         if (isGroupMsg) console.log('\x1b[1;31m~\x1b[1;37m>', '[\x1b[1;32mMSG\x1b[1;37m]', time, color(msgs(command)), 'from', color(pushname), 'in', color(formattedTitle))
         if (isBlocked) return
@@ -66,6 +67,10 @@ export const msgHandler = async (client:Client, message) => {
         addFilter(from)
 
         switch (command) {
+            case '#help':
+            case '#menu':
+                await client.reply(from, Text.textMenu(pushname), id)
+                break;
             case '#speed':
             case '#pings':
                 await client.reply(from, `Pong!!!!\nSpeed: ${processTime(t, moment())} s`, id)
@@ -101,6 +106,68 @@ export const msgHandler = async (client:Client, message) => {
                         await client.reply(from, mess.error.St, id)
                 }
                 break;
+                case '#stikergif':
+                case '#stickergif':
+                case '#gifstiker':
+                case '#gifsticker': {
+                    if (args.length === 1) return client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
+                    const url = body.slice(11)
+                    const isGiphy = url.match(new RegExp(/https?:\/\/(www\.)?giphy.com/, 'gi'))
+                    const isMediaGiphy = url.match(new RegExp(/https?:\/\/media.giphy.com\/media/, 'gi'))
+                    if (isGiphy) {
+                        const getGiphyCode = url.match(new RegExp(/(\/|\-)(?:.(?!(\/|\-)))+$/, 'gi'))
+                        if (!getGiphyCode) { return client.reply(from, 'Gagal mengambil kode giphy', id) }
+                        const giphyCode = getGiphyCode[0].replace(/[-\/]/gi, '')
+                        const smallGifUrl = 'https://media.giphy.com/media/' + giphyCode + '/giphy-downsized.gif'
+                        await client.sendGiphyAsSticker(from, smallGifUrl).then(() => {
+                            client.sendText(from, 'Here\'s your sticker')
+                            console.log(`Sticker Processed for ${processTime(t, moment())} Second`)
+                        }).catch((err) => console.log(err))
+                    } else if (isMediaGiphy) {
+                        const gifUrl = url.match(new RegExp(/(giphy|source).(gif|mp4)/, 'gi'))
+                        if (!gifUrl) { return client.reply(from, 'Gagal mengambil kode giphy', id) }
+                        const smallGifUrl = url.replace(gifUrl[0], 'giphy-downsized.gif')
+                        client.sendGiphyAsSticker(from, smallGifUrl).then(() => {
+                            client.sendText(from, 'Here\'s your sticker')
+                            console.log(`Sticker Processed for ${processTime(t, moment())} Second`)
+                        }).catch((err) => console.log(err))
+                    } else {
+                        await client.reply(from, 'maaf, untuk saat ini sticker gif hanya bisa menggunakan link dari giphy.  [Giphy Only]', id)
+                    }
+                    break;
+                    }
+            // case '#twt':
+            // case '#twitter':
+            //     if (args.length === 1) return client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
+            //     const url = body.slice(5)
+            //     if (!isUrl(url) && !url.includes('twitter.com') || url.includes('t.co')) return client.reply(from, 'Maaf, url yang kamu kirim tidak valid. [Invalid Link]', id)
+            //     await client.reply(from, `_Scraping Metadata..._ \n\n${Text.textDonasi()}`, id)
+            //     twt(url).then(async (data:any) => {
+            //         if (data.type === 'video') {
+            //             const content = data.variants.filter(x => x.content_type !== 'application/x-mpegURL').sort((a, b) => b.bitrate - a.bitrate)                                                
+            //             await client.sendFileFromUrl(from, content[0].url, 'video.mp4', `\n\nProcessed for ${processTime(t, moment())} _Second_`, null, null, true)
+            //                 .then((serialized) => console.log(`Sukses Mengirim File dengan id: ${serialized} diproses selama ${processTime(t, moment())}`))
+            //                 .catch((err) => console.error(err))
+            //         } else if (data.type === 'photo') {
+            //             for (let i = 0; i < data.variants.length; i++) {
+            //                 await client.sendFileFromUrl(from, data.variants[i], data.variants[i].split('/media/')[1], '', null, null, true)
+            //                     .then((serialized) => console.log(`Sukses Mengirim File dengan id: ${serialized} diproses selama ${processTime(t, moment())}`))
+            //                     .catch((err) => console.error(err))
+            //             }
+            //         }
+            //     })
+            //         .catch(() => client.reply(from, 'Maaf, link tidak valid atau tidak ada media di link yang kamu kirim. [Invalid Link]', id))
+            //     break
+
+            case '#translate' :
+            case '#tr':
+                if (args.length === 1) return client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
+                if (!quotedMsg) return client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
+                const quoteText = quotedMsg.type == 'chat' ? quotedMsg.body : quotedMsg.type == 'image' ? quotedMsg.caption : ''                                ;
+                trans(quoteText, args[1])
+                    .then((result:string) => client.reply(from, `${quoteText} => ${result}`, quotedMsg.chatId))
+                    .catch(() => client.reply(from, 'Error, Kode bahasa salah.', id))
+                break
 
             case '#wiki': 
                 if (args.length === 1) return await client.reply(from, 'kirim perintah *#wiki*\ncontoh : #wiki babi', id)
@@ -114,8 +181,8 @@ export const msgHandler = async (client:Client, message) => {
                     })
                 break;
 
-            case '#tts':
-                if(args.length === 1) return await client.reply(from, 'Kirim perintah *#tts* [id, en, jp, ar] [teks],\ncontoh *#tts* id halo anak babi', id)
+            case '#say':
+                if(args.length === 1) return await client.reply(from, 'Kirim perintah *#say* [id, en, jp, ar] [teks],\ncontoh *#say* id halo anak babi', id)
                 const ttsId = require('node-gtts')('id')
                 const ttsEn = require('node-gtts')('en')
                 const ttsJp = require('node-gtts')('ja')
@@ -140,7 +207,7 @@ export const msgHandler = async (client:Client, message) => {
                     }) 
                 }
                 else if (dataBahasa == 'ar') {
-                    ttsJp.save('./libs/tts/resAR.mp3', dataText, () => {
+                    ttsAr.save('./libs/tts/resAR.mp3', dataText, () => {
                         client.sendPtt(from, './libs/tts/resAR.mp3', id)
                     }) 
                 } else {
