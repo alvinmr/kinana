@@ -2,7 +2,7 @@ import * as chalk from 'chalk'
 import * as moment from 'moment-timezone'
 
 // Text With Color
-export const color = (text:string, color:string = 'white') => {
+export const color = (text:string, color?:string) => {
     return !color ? chalk.green(text) : chalk.keyword(color)(text)
 }
 
