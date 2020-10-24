@@ -40,16 +40,24 @@ Penggunaan : #say id anak babi kalian
 
 6. *#wiki* _<kata kunci>_
 Mencari penjelasan berdasarkan wikipedia sesuai dengan kata kunci yang dikirimkan
-Penggunaan : #wiki robot
+Penggunaan : #wiki anjing
 
-7. *#ceklokasi*
+7. *#artinama _<nama kamu>_*
+Mencari arti nama
+Penggunaan : #artinama yanto
+
+8. *#kecocokan* _<nama 1>_ | _<nama 2>_
+Mengecek kecocokan pasangan berdasarkan nama
+Penggunaan : #kecocokan jodi | akbar
+
+9. *#ceklokasi*
 Cek lokasi penyebaran covid-19 di daerah sekitarmu (kelurahan).
 Penggunaan: kirimkan lokasimu lalu balas/quote/reply lokasi yang kamu kirim dengan _*#ceklokasi*_
 
-8. *#tnc*
+10. *#tnc*
 Menampilkan Syarat dan Kondisi Bot.
 
-9. *#donasi*
+11. *#donasi*
 menampilkan informasi donasi.
 
 semoga bermanfaat y`

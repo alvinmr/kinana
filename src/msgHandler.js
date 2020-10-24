@@ -4,7 +4,9 @@ const moment = require('moment-timezone')
 const { decryptMedia } = require('@open-wa/wa-automate')
 const axios =  require('axios')
 const Text = require('../libs/texts/id.js')
-const { twt } =  require('../utils/downloader.js')
+const cheerio = require('cheerio')
+const request = require('request')
+
 
 
 moment.tz.setDefault('Asia/Makassar').locale('id')
@@ -72,6 +74,7 @@ const msgHandler = async (client, message) => {
             case '#help':
             case '#menu':
                 await client.reply(from, Text.textMenu(pushname), id)
+                if (isGroupAdmins) return await client.sendText(from, Text.textAdmin)
                 break;
             case '#speed':
             case '#pings':
@@ -151,10 +154,64 @@ const msgHandler = async (client, message) => {
                 break
 
             case '#bosen' :
+            case '#gabut' :
                 const boredText = await axios.get('http://www.boredapi.com/api/activity/')
                 trans(boredText.data.activity, 'id')
                     .then((result) => client.reply(from, `Coba ${result.toLowerCase()}`, id))
                     .catch((err) => console.log(err) )
+                break;
+
+            case '#apakah' :
+                const apakah = require('node-gtts')('id')
+                const answer = ['ya', 'tidak']
+                if (args .length === 1) return await client.reply(from, 'apakah apa babi, yang jelas napa', id)
+                let randomAnsw = Math.floor(Math.random() * answer.length)
+                apakah.save('./libs/tts/resID.mp3', answer[randomAnsw], () => {
+                    client.sendPtt(from, './libs/tts/resID.mp3', id)
+                })
+                break;
+
+            case '#berapakah' :
+                await client.reply(from, `babi kau ${pushname}`, id)
+                break;
+
+            case '#artinama' :
+            case '#arti' :
+                if (args.length === 1) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)                
+                const nama = body.slice(6)
+
+                request.get({
+                    headers: {'content-type' : 'application/x-www-form-urlencoded'},
+                    url:     'http://www.primbon.com/arti_nama.php?nama1='+ nama +'&proses=+Submit%21+',
+                }, async (error, response, body) => {
+                    let $ = cheerio.load(body);
+                    var y = $.html().split('arti:')[1];
+                    var t = y.split('method="get">')[1];
+                    var f = y.replace(t ," ");
+                    var x = f.replace(/<br\s*[\/]?>/gi, "\n");
+                    var h  = x.replace(/<[^>]*>?/gm, '');
+                    await client.reply(from, `Nama : *${nama}* \nMemiliki arti : ${h}`, id)
+                })
+                break;
+
+            case '#kecocokan' :
+                if (args.length === 1) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)                
+                if (args[2] !== '|') return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
+                const nama1 = args[1]
+                const nama2 = args[3]
+                request.get({
+                    headers: {'content-type' : 'application/x-www-form-urlencoded'},
+                    url:     'http://www.primbon.com/kecocokan_nama_pasangan.php?nama1='+ nama1 +'&nama2='+ nama2 +'&proses=+Submit%21+',
+                }, async (error, response, body) => {
+                    let $ = cheerio.load(body);
+                    var y = $.html().split('<b>KECOCOKAN JODOH BERDASARKAN NAMA PASANGAN</b><br><br>')[1];
+                    var t = y.split('.<br><br>')[1];
+                    var f = y.replace(t ," ");
+                    var x = f.replace(/<br\s*[\/]?>/gi, "\n");
+                    var h  = x.replace(/<[^>]*>?/gm, '');
+                    var d = h.replace("&amp;", '&')
+                    await client.reply(from, `${d}`, id)
+                })
                 break;
                     
 
