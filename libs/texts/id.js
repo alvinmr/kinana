@@ -18,19 +18,6 @@ Penggunaan: Kirim pesan dengan format *gifsticker https://media.giphy.com/media/
 Untuk membuat sticker meme dengan teks atas dan bawah
 Penggunaan: kirim gambar dengan caption _*#meme aku atas | kamu bawah*_, atau juga bisa dengan membalas gambar yang sudah ada.
 
-Downloader:
-1. *#tiktok* _<tiktok url>_
-Untuk mengunduh video dari video tiktok.
-Penggunaan: kirim pesan dengan format *#tiktok https://www.tiktok.com/@itsandani/video/6869248690381425922*     
-
-2. *#ig* _<instagram post url>_
-Untuk mengunduh photo dan video dari instagram.
-Penggunaan: kirim pesan dengan format *#ig https://www.instagram.com/p/BPOd1vhDMIp/*
-
-3. *#twt* _<twitter post url>_
-Untuk mengunduh photo dan video dari Twitter.
-Penggunaan: kirim pesan dengan format *#twt https://twitter.com/sonnylazuardi/status/1318194354536603649/photo/1*
-
 Lain-lain:
 1. *#translate* _<kode bahasa>_
 Untuk mengartikan pesan menjadi bahasa yang ditentukan.
