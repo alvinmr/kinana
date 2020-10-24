@@ -1,6 +1,6 @@
-import fetch from 'node-fetch';
+const fetch = require('node-fetch')
 
-export const fetchJson =  (url:string, options:any = '') =>{
+export const fetchJson =  (url, options = '') =>{
     new Promise(async (resolve, reject) => {
         fetch(url, options)
             .then(response => response.json())

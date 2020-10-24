@@ -1,4 +1,4 @@
-export const textMenu = (pushname) => {
+const textMenu = (pushname) => {
     return `halo, ${pushname}! 👋️
 nih menu menunya🎉
 sticker creator:
@@ -68,7 +68,7 @@ menampilkan informasi donasi.
 semoga bermanfaat y`
 }
 
-export const textAdmin = () => {
+const textAdmin = () => {
     return `
 ⚠ [ *Admin Group dan Owner Only* ] ⚠ 
 Berikut adalah beberapa fitur admin grup yang ada pada bot ini!
@@ -89,7 +89,7 @@ Untuk mention semua member grup.
 Untuk menghapus pesan bot (balas pesan bot dengan #del)`
 }
 
-export const textDonasi = () => {
+const textDonasi = () => {
     return `
 Hai, terimakasih telah menggunakan bot ini, untuk mendukung bot ini kamu dapat membantu dengan berdonasi melalui link berikut:
 1. Saweria: https://saweria.co/alvinmr
@@ -97,7 +97,7 @@ Donasi akan digunakan untuk pengembangan dan pengoperasian bot ini.
 Terimakasih.`
 }
 
-export const textTnC = () => {
+const textTnC = () => {
     return `
 Source code / bot ini merupakan program open-source (gratis) yang ditulis menggunakan Javascript, kamu dapat menggunakan, menyalin, memodifikasi, menggabungkan, menerbitkan, mendistribusikan, mensublisensikan, dan atau menjual salinan dengan tanpa menghapus author utama dari source code / bot ini.
 Dengan menggunakan source code / bot ini maka anda setuju dengan Syarat dan Kondisi sebagai berikut:
@@ -115,4 +115,11 @@ Thanks To : https://github.com/YogaSakti/imageToSticker
 Source Code : https://github.com/alvinmr/whatsapp-botver2
 NodeJS WhatsApp library: https://github.com/open-wa/wa-automate-nodejs
 Best regards, Alvin.`
+}
+
+module.exports = {
+    textAdmin,
+    textDonasi,
+    textMenu,
+    textTnC
 }

@@ -1,9 +1,9 @@
 const { twitter } = require('video-url-link')
-import { promisify } from 'util';
+const { promisify } =  require('util')
 
 const twtGetInfo = promisify(twitter.getInfo)
 
-export const twt = (url) => new Promise((resolve, reject) => {
+const twt = (url) => new Promise((resolve, reject) => {
     console.log('GET Metadata from =>', url)
     twtGetInfo(url, {})
         .then((content) => resolve(content))
@@ -11,6 +11,9 @@ export const twt = (url) => new Promise((resolve, reject) => {
             console.log(err)
             reject(err)
         })
-    
 }) 
+
+module.exports = {
+    twt
+}
 

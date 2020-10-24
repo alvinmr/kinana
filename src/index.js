@@ -1,11 +1,12 @@
-import { create, Client } from "@open-wa/wa-automate"
-import { options } from "../utils/option";
-import { color } from "../utils/index"
+const {Client, create} = require('@open-wa/wa-automate')
+const options = require('../utils/option')
+const color = require('../utils/index')
+const fs = require('fs')
 
 require('./msgHandler')
 noCache('./msgHandler', module => console.log(`'${module} updated!'`))
 
-const start = (client:Client) => {
+const start = (client = new Client()) => {
     console.log('[BOT] SERVER STARTED');
 
     client.onStateChanged((state) => {
@@ -22,7 +23,7 @@ const start = (client:Client) => {
                     client.cutMsgCache()
                 }
             })
-        require('./msgHandler').msgHandler(client, message)
+        require('./msgHandler')(client, message)
     })
 
     client.onAddedToGroup(async (chat) => {
@@ -38,7 +39,7 @@ const start = (client:Client) => {
 
 function noCache(module, cb = (a) => {}){
     console.log('Module', `'${module}'`, 'is now watched for changed')
-    require('fs').watchFile(require.resolve(module), async () => {
+    fs.watchFile(require.resolve(module), async () => {
         await uncache(require.resolve(module))
         cb(module)
     })    
