@@ -18,6 +18,7 @@
     "moment-timezone": "^0.5.31",
     "node-fetch": "^2.5.7",
     "node-gtts": "^2.0.2",
+    "pm2": "^4.5.0",
     "request": "^2.88.2",
     "video-url-link": "^0.1.5"
   }

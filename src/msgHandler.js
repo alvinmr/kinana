@@ -163,7 +163,7 @@ const msgHandler = async (client, message) => {
 
             case '#apakah' :
                 const apakah = require('node-gtts')('id')
-                const answer = ['ya', 'tidak']
+                const answer = ['iya', 'tidak', 'mungkin', 'coba tanya lagi']
                 if (args .length === 1) return await client.reply(from, 'apakah apa babi, yang jelas napa', id)
                 let randomAnsw = Math.floor(Math.random() * answer.length)
                 apakah.save('./libs/tts/resID.mp3', answer[randomAnsw], () => {
