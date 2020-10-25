@@ -222,7 +222,7 @@ const msgHandler = async (client, message) => {
                     .then(async (res) => {
                         const qAwal = res.data.query.pages
                         const value = Object.values(qAwal)  
-                        value ? await client.reply(from, value, id) : await client.reply(from, 'wah maaf ga nemu nih di wiki')
+                        value[0].extract ? await client.reply(from, value[0].extract, id) : await client.reply(from, 'wah maaf ga nemu nih di wiki')
                         
                     })
                     .catch(async (err) => {
