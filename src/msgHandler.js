@@ -218,12 +218,15 @@ const msgHandler = async (client, message) => {
             case '#wiki': 
                 if (args.length === 1) return await client.reply(from, 'kirim perintah *#wiki*\ncontoh : #wiki babi', id)
                 const query = body.slice(6)
-                axios.post(`https://mhankbarbar.herokuapp.com/api/wiki?q=${query}`)
+                axios.post(`https://id.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=${query}`)
                     .then(async (res) => {
-                        if(res.data.error) {
-                            await client.reply(from, res.data.error, id)
-                        }
-                        await client.reply(from, res.data.result, id)
+                        const qAwal = res.data.query.pages
+                        const value = Object.values(qAwal)  
+                        value ? await client.reply(from, value, id) : await client.reply(from, 'wah maaf ga nemu nih di wiki')
+                        
+                    })
+                    .catch(async (err) => {
+                        await client.reply(from, 'kayanya ada yang salah deh')
                     })
                 break;
 
