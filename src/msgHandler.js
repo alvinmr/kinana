@@ -71,10 +71,16 @@ const msgHandler = async (client, message) => {
         // addFilter(from)
 
         switch (command) {
+            case '#tnc':
+                await client.reply(from, Text.textTnC(), id)
+                break;
+            case '#donasi':
+                await client.reply(from, Text.textDonasi(), id)
+                break;
             case '#help':
             case '#menu':
                 await client.reply(from, Text.textMenu(pushname), id)
-                if (isGroupAdmins) return await client.sendText(from, Text.textAdmin)
+                if (isGroupAdmins) return await client.sendText(from, Text.textAdmin())
                 break;
             case '#speed':
             case '#pings':
@@ -163,7 +169,7 @@ const msgHandler = async (client, message) => {
 
             case '#apakah' :
                 const apakah = require('node-gtts')('id')
-                const answer = ['iya', 'tidak', 'mungkin', 'coba tanya lagi']
+                const answer = ['iya', 'tidak', 'mungkin']
                 if (args .length === 1) return await client.reply(from, 'apakah apa babi, yang jelas napa', id)
                 let randomAnsw = Math.floor(Math.random() * answer.length)
                 apakah.save('./libs/tts/resID.mp3', answer[randomAnsw], () => {
@@ -175,10 +181,9 @@ const msgHandler = async (client, message) => {
                 await client.reply(from, `babi kau ${pushname}`, id)
                 break;
 
-            case '#artinama' :
             case '#arti' :
                 if (args.length === 1) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)                
-                const nama = body.slice(6)
+                nama = body.slice(6)
 
                 request.get({
                     headers: {'content-type' : 'application/x-www-form-urlencoded'},
@@ -226,7 +231,7 @@ const msgHandler = async (client, message) => {
                         
                     })
                     .catch(async (err) => {
-                        await client.reply(from, 'kayanya ada yang salah deh')
+                        await client.reply(from, 'kayanya ada yang salah deh', id)
                     })
                 break;
 
@@ -238,8 +243,7 @@ const msgHandler = async (client, message) => {
                 const ttsAr = require('node-gtts')('ar')
                 const dataText = body.slice(8)
                 if (dataText === '') return await client.reply(from, 'bodoh kh?', id)
-                let totalText = Number(dataText.split(' ').length) - Number(dataText.length)
-                if (totalText >= 250) return await client.reply(from, 'jangan kebanyakan babi', id)
+                if (dataText >= 250) return await client.reply(from, 'jangan kebanyakan babi', id)
                 let dataBahasa = body .slice(5, 7)
                 if (dataBahasa == 'id') {    
                     ttsId.save('./libs/tts/resID.mp3', dataText, () => {
@@ -265,8 +269,8 @@ const msgHandler = async (client, message) => {
                 break;
 
             case '#tagall':
-                if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group!', id)
-                if (!isGroupAdmins || !isOwner) return await client.reply(from, 'Perintah ini cuma bisa dipake sama admin!', id)
+                if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
+                if (!isGroupAdmins || !isOwner) return await client.reply(from, 'Perintah ini cuma bisa dipake sama admin', id)
                 const grupMem = await client.getGroupMembers(groupId)                
                 let tag = `-Tag All-\n`
                 let idMem
@@ -287,5 +291,3 @@ const msgHandler = async (client, message) => {
         
     }
 }
-
-module.exports = msgHandler

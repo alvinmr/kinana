@@ -14,50 +14,43 @@ Penggunaan: kirim pesan dengan format *#sticker https://memegenerator.net/img/in
 Untuk merubah gif menjadi sticker (Giphy Only)
 Penggunaan: Kirim pesan dengan format *gifsticker https://media.giphy.com/media/JUvI2c1ddyzkwK4RlV/giphy.gif*
 
-4. *#memesticker* _<teks atas>_ | _<teks bawah>_
-Untuk membuat sticker meme dengan teks atas dan bawah
-Penggunaan: kirim gambar dengan caption _*#meme aku atas | kamu bawah*_, atau juga bisa dengan membalas gambar yang sudah ada.
 
 Lain-lain:
-1. *#translate* _<kode bahasa>_
+1. *#tr* _<kode bahasa>_
 Untuk mengartikan pesan menjadi bahasa yang ditentukan.
 Penggunaan: Balas/quote/reply pesan yang ingin kamu translate dengan _*#translate id*_ <- id adalah kode bahasa. kode bahasa dapat dilihat di *https://bit.ly/33FVldE*
 
-2. *#resi* _<kurir>_ _<nomer resi>_
-Untuk memeriksa status pengiriman barang, daftar kurir: jne, pos, tiki, wahana, jnt, rpx, sap, sicepat, pcp, jet, dse, first, ninja, lion, idl, rex.
-Penggunaan: kirim pesan dengan format _*#resi jne 1238757632*_
-
-3. *#makememe* _<teks atas>_ | _<teks bawah>_
-Untuk membuat meme dengan teks atas dan bawah
-Penggunaan: kirim gambar dengan caption _*#meme aku atas | kamu bawah*_, atau juga bisa dengan membalas gambar yang sudah ada.
-
-4. *#meme*
-Mengirim meme random (bener bener random gabisa diatur meme apa)
-
-5. *#say* [id, jp, ar, en] _<teks>_
+2. *#say* [id, jp, ar, en] _<teks>_
 Mengubah teks menjadi suara dengan batas teks 250 kata
 Penggunaan : #say id anak babi kalian
 
-6. *#wiki* _<kata kunci>_
+3. *#wiki* _<kata kunci>_
 Mencari penjelasan berdasarkan wikipedia sesuai dengan kata kunci yang dikirimkan
 Penggunaan : #wiki anjing
 
-7. *#artinama _<nama kamu>_*
+4. *#arti _<nama kamu>_*
 Mencari arti nama
 Penggunaan : #artinama yanto
 
-8. *#kecocokan* _<nama 1>_ | _<nama 2>_
+5. *#kecocokan* _<nama 1>_ | _<nama 2>_
 Mengecek kecocokan pasangan berdasarkan nama
-Penggunaan : #kecocokan jodi | akbar
+Penggunaan : #kecocokan jodi | akbar\
 
-9. *#ceklokasi*
-Cek lokasi penyebaran covid-19 di daerah sekitarmu (kelurahan).
-Penggunaan: kirimkan lokasimu lalu balas/quote/reply lokasi yang kamu kirim dengan _*#ceklokasi*_
+6. *#gabut*
+Memberi sebuah saran agar kamu ga gabut
+Penggunaan : #gabut
 
-10. *#tnc*
+7. *#apakah* _<pertanyaanmu>_
+Menjawab sebuh pertanyaanmu
+Penggunaan : #apakah aku ganteng bot ?
+
+
+Info Bot :
+
+1. *#tnc*
 Menampilkan Syarat dan Kondisi Bot.
 
-11. *#donasi*
+2. *#donasi*
 menampilkan informasi donasi.
 
 semoga bermanfaat y`
