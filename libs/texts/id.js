@@ -34,7 +34,7 @@ Penggunaan : #artinama yanto
 
 5. *#kecocokan* _<nama 1>_ | _<nama 2>_
 Mengecek kecocokan pasangan berdasarkan nama
-Penggunaan : #kecocokan jodi | akbar\
+Penggunaan : #kecocokan jodi | akbar
 
 6. *#gabut*
 Memberi sebuah saran agar kamu ga gabut
