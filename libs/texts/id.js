@@ -44,6 +44,10 @@ Penggunaan : #gabut
 Menjawab sebuh pertanyaanmu
 Penggunaan : #apakah aku ganteng bot ?
 
+8. *#siapakah* _<pertanyaanmu>_
+Random ngetag orang yang ada di grup mu
+Penggunaan : #siapakah orang paling babi ?
+
 
 Info Bot :
 

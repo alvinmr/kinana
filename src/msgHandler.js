@@ -188,7 +188,7 @@ const msgHandler = async (client, message) => {
                 request.get({
                     headers: {'content-type' : 'application/x-www-form-urlencoded'},
                     url:     'http://www.primbon.com/arti_nama.php?nama1='+ nama +'&proses=+Submit%21+',
-                }, async (error, response, body) => {
+                }, async (response, body) => {
                     let $ = cheerio.load(body);
                     var y = $.html().split('arti:')[1];
                     var t = y.split('method="get">')[1];
@@ -207,7 +207,7 @@ const msgHandler = async (client, message) => {
                 request.get({
                     headers: {'content-type' : 'application/x-www-form-urlencoded'},
                     url:     'http://www.primbon.com/kecocokan_nama_pasangan.php?nama1='+ nama1 +'&nama2='+ nama2 +'&proses=+Submit%21+',
-                }, async (error, response, body) => {
+                }, async (response, body) => {
                     let $ = cheerio.load(body);
                     var y = $.html().split('<b>KECOCOKAN JODOH BERDASARKAN NAMA PASANGAN</b><br><br>')[1];
                     var t = y.split('.<br><br>')[1];
@@ -230,7 +230,7 @@ const msgHandler = async (client, message) => {
                         value[0].extract ? await client.reply(from, value[0].extract, id) : await client.reply(from, 'wah maaf ga nemu nih di wiki', id)
                         
                     })
-                    .catch(async (err) => {
+                    .catch(async () => {
                         await client.reply(from, 'kayanya ada yang salah deh', id)
                     })
                 break;
@@ -271,7 +271,7 @@ const msgHandler = async (client, message) => {
             case '#tagall':
                 if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
                 if (!isGroupAdmins || !isOwner) return await client.reply(from, 'Perintah ini cuma bisa dipake sama admin', id)
-                const grupMem = await client.getGroupMembers(groupId)                
+                const grupMem = await client.getGroupMembers(groupId)              
                 let tag = `-Tag All-\n`
                 let idMem
                 for (let i = 0; i < grupMem.length; i++){
@@ -280,6 +280,18 @@ const msgHandler = async (client, message) => {
                 }                
                 await client.sendTextWithMentions(from, tag)
                 break;
+
+            case '#siapakah' :
+                if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
+                const jawaban = body.slice(1)
+                const siapakah = body.slice(10)
+                if (jawaban == 'siapakah') return await client.reply(from, 'Nanya yang jelas babi', id)
+                if (siapakah.length <= 3) return await client.reply(from, 'Nanya yang jelas babi', id)
+                const grupMem2 = await client.getGroupMembers(groupId)
+                const randomTag = grupMem2[Math.floor(Math.random() * grupMem2.length)].id
+                await client.sendTextWithMentions(from, `${jawaban} \njawaban : @${randomTag.replace(/@c.us/g, '')}`)
+                break;
+
         
             default:
                 break;
