@@ -94,6 +94,7 @@ const msgHandler = async (client, message) => {
                     var idc = await client.getChatById(ids)
                     if(!idc.isReadOnly) await client.sendText(ids, `-BROADCAST BOT-\n\n${msg}`)
                 }
+                await client.reply(from, `Broadcast sukses, total chat ${allChat.length}`, id)
                 break;
             case '#sticker' :
             case '#stiker' :
