@@ -6,7 +6,7 @@ const axios =  require('axios')
 const Text = require('../libs/texts/id.js')
 const cheerio = require('cheerio')
 const request = require('request')
-
+require('dotenv').config()
 
 
 moment.tz.setDefault('Asia/Makassar').locale('id')
@@ -45,6 +45,7 @@ const msgHandler = async (client, message) => {
         }
 
         const time = moment(t * 1000).format('DD/MM HH:mm:ss')
+        const apiKey = process.env.API_KEY
         const botNumber = await client.getHostNumber()
         const blockNumber = await client.getBlockedIds()
         const groupId = isGroupMsg ? chat.groupMetadata.id : ''
@@ -83,7 +84,7 @@ const msgHandler = async (client, message) => {
                 // if (isGroupAdmins) return await client.sendText(from, Text.textAdmin())
                 break;
             case '#speed':
-            case '#pings':
+            case '#ping':
                 await client.reply(from, `Pong!!!!\nSpeed: ${processTime(t, moment())} s`, id)
                 break;
             case '#bc':
@@ -293,6 +294,23 @@ const msgHandler = async (client, message) => {
                 await client.sendTextWithMentions(from, `${jawaban} \njawaban : @${randomTag.replace(/@c.us/g, '')}`)
                 break;
 
+            case '#1cak': 
+                const wancak = await axios.get('https://api.be-team.me/1cak', {
+                    headers: {
+                        'apiKey': apiKey
+                    }
+                })
+                await client.sendImage(from, wancak.data.result.src,'meme.jpg', wancak.data.result.title, id)                
+                break;
+            case '#bot' : 
+                const text = body.slice(5)
+                const simi = await axios.get(`https://api.be-team.me/simisimi?text=${text}&lang=id`, {
+                    headers: {
+                        'apiKey': apiKey
+                    }
+                })
+                await client.reply(from, simi.data.result, id)
+                break;
         
             default:
                 break;

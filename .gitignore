@@ -1,3 +1,5 @@
 node_modules
+libs/tts
 .node-persist
 session.data.json
+.env
