@@ -303,13 +303,23 @@ const msgHandler = async (client, message) => {
                 await client.sendImage(from, wancak.data.result.src,'meme.jpg', wancak.data.result.title, id)                
                 break;
             case '#bot' : 
-                const text = body.slice(5)
+                const text = body.slice(4)
                 const simi = await axios.get(`https://api.be-team.me/simisimi?text=${text}&lang=id`, {
                     headers: {
                         'apiKey': apiKey
                     }
                 })
                 await client.reply(from, simi.data.result, id)
+                break;
+
+            case '#twt': 
+                const linkTwt = body.slice(4)
+                const twt = await axios.get(`https://api.be-team.me/twitter?url=${linkTwt}`, {
+                    headers: {
+                        'apiKey': apiKey
+                    }
+                })
+                console.log(twt.data.result.extended_entities.media[6].video_info.variants[0].url);
                 break;
         
             default:

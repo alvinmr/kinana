@@ -1,0 +1,13 @@
+[1029/060645.763:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[1029/062240.022:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[1029/062240.090:ERROR:file_io_win.cc(162)] CreateFile C:\Users\maula\AppData\Local\Temp\puppeteer_dev_chrome_profile-afqyeB\Crashpad\settings.dat: The system cannot find the path specified. (0x3)
+[1029/062240.091:ERROR:file_io_win.cc(171)] CreateFile C:\Users\maula\AppData\Local\Temp\puppeteer_dev_chrome_profile-afqyeB\Crashpad\reports\518a52f0-1da4-4399-ae5b-5ecd6a808ea0.dmp: The system cannot find the path specified. (0x3)
+[1029/062240.091:ERROR:crash_report_exception_handler.cc(99)] PrepareNewCrashReport failed
+[1029/062850.555:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[1029/062850.567:ERROR:file_io_win.cc(162)] CreateFile C:\Users\maula\AppData\Local\Temp\puppeteer_dev_chrome_profile-Kirlfb\Crashpad\settings.dat: The system cannot find the path specified. (0x3)
+[1029/062850.568:ERROR:file_io_win.cc(171)] CreateFile C:\Users\maula\AppData\Local\Temp\puppeteer_dev_chrome_profile-Kirlfb\Crashpad\reports\6e6403b4-bc8e-4daa-b6f0-d58e7df56002.dmp: The system cannot find the path specified. (0x3)
+[1029/062850.568:ERROR:crash_report_exception_handler.cc(99)] PrepareNewCrashReport failed
+[1029/063651.447:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[1029/063651.459:ERROR:file_io_win.cc(162)] CreateFile C:\Users\maula\AppData\Local\Temp\puppeteer_dev_chrome_profile-78iGP4\Crashpad\settings.dat: The system cannot find the path specified. (0x3)
+[1029/063651.459:ERROR:file_io_win.cc(171)] CreateFile C:\Users\maula\AppData\Local\Temp\puppeteer_dev_chrome_profile-78iGP4\Crashpad\reports\74523f7f-b87b-4788-820e-baf9e30511b8.dmp: The system cannot find the path specified. (0x3)
+[1029/063651.459:ERROR:crash_report_exception_handler.cc(99)] PrepareNewCrashReport failed
