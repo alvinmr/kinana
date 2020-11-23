@@ -303,7 +303,7 @@ const msgHandler = async (client, message) => {
                 await client.sendImage(from, wancak.data.result.src,'meme.jpg', wancak.data.result.title, id)                
                 break;
             case '#bot' : 
-                const text = body.slice(4)
+                const text = body.slice(5)
                 const simi = await axios.get(`https://api.be-team.me/simisimi?text=${text}&lang=id`, {
                     headers: {
                         'apiKey': apiKey
@@ -313,13 +313,23 @@ const msgHandler = async (client, message) => {
                 break;
 
             case '#twt': 
-                const linkTwt = body.slice(4)
+                await client.reply(from, 'tunggu ya', id)
+                const linkTwt = body.slice(5)
+                const isValidLink = linkTwt.match(new RegExp(/http(?:s)?:\/\/(?:www\.)?twitter\.com\/([a-zA-Z0-9_]+)/))
+                if(!isValidLink) return await client.reply(from, 'ganemu nih hehehew. coba lagi', id)
                 const twt = await axios.get(`https://api.be-team.me/twitter?url=${linkTwt}`, {
                     headers: {
                         'apiKey': apiKey
                     }
                 })
-                console.log(twt.data.result.extended_entities.media[6].video_info.variants[0].url);
+                const media = twt.data.result.extended_entities.media[0]
+                if(media.type == 'video'){
+                    let linkVid = media.video_info.variants[0].url;
+                    await client.sendFileFromUrl(from, linkVid, 'twt.mp4', 'Nih vidnya', id)
+                }else{
+                    let linkPhoto = media.media_url
+                    await client.sendImage(from, linkPhoto, 'twt.jpg', 'Nih photonya', id)
+                }
                 break;
         
             default:
