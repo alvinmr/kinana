@@ -310,7 +310,7 @@ const msgHandler = async (client, message) => {
                         'apiKey': apiKey
                     }
                 })
-                if(simi.data.result) return await client.reply(from, 'sori kaka fitur ini lagi limit. biar ga sering limit, kuy donasi ke https://saweria.co/alvinmr', id)
+                if(!simi.data.result) return await client.reply(from, 'sori kaka fitur ini lagi limit. biar ga sering limit, kuy donasi ke https://saweria.co/alvinmr', id)
                 await client.reply(from, simi.data.result, id)
                 break;
 
