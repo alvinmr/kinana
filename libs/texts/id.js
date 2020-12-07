@@ -28,11 +28,11 @@ Penggunaan : #say id anak babi kalian
 Mencari penjelasan berdasarkan wikipedia sesuai dengan kata kunci yang dikirimkan
 Penggunaan : #wiki anjing
 
-4. *#arti _<nama kamu>_*
+4. *#arti _<nama kamu>_* (SEMENTARA MASI BELOM BISA)
 Mencari arti nama
 Penggunaan : #artinama yanto
 
-5. *#kecocokan* _<nama 1>_ | _<nama 2>_
+5. *#kecocokan* _<nama 1>_ | _<nama 2>_ (SEMENTARA MASI BELOM BISA)
 Mengecek kecocokan pasangan berdasarkan nama
 Penggunaan : #kecocokan jodi | akbar
 
@@ -47,6 +47,10 @@ Penggunaan : #apakah aku ganteng bot ?
 8. *#siapakah* _<pertanyaanmu>_
 Random ngetag orang yang ada di grup mu
 Penggunaan : #siapakah orang paling babi ?
+
+9. *#twt* _<link post twitter>_
+mendownload postingan video / foto di twitter
+Penggunaan : #twt https://twitter.com/txtdrpemerintah/status/1335928302939242497
 
 
 Info Bot :

@@ -300,6 +300,7 @@ const msgHandler = async (client, message) => {
                         'apiKey': apiKey
                     }
                 })
+                if(!wancak.data.result) return await client.reply(from, 'sori kaka fitur ini lagi limit. biar ga sering limit, kuy donasi ke https://saweria.co/alvinmr', id)
                 await client.sendImage(from, wancak.data.result.src,'meme.jpg', wancak.data.result.title, id)                
                 break;
             case '#bot' : 
@@ -309,6 +310,7 @@ const msgHandler = async (client, message) => {
                         'apiKey': apiKey
                     }
                 })
+                if(simi.data.result) return await client.reply(from, 'sori kaka fitur ini lagi limit. biar ga sering limit, kuy donasi ke https://saweria.co/alvinmr', id)
                 await client.reply(from, simi.data.result, id)
                 break;
 
@@ -323,6 +325,7 @@ const msgHandler = async (client, message) => {
                     }
                 })
                 const media = twt.data.result.extended_entities.media[0]
+                if(!media) return await client.reply(from, 'sori kaka fitur ini lagi limit. biar ga sering limit, kuy donasi ke https://saweria.co/alvinmr', id)
                 if(media.type == 'video'){
                     let linkVid = media.video_info.variants[0].url;
                     await client.sendFileFromUrl(from, linkVid, 'twt.mp4', 'Nih vidnya', id)
