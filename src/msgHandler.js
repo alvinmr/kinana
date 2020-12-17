@@ -230,6 +230,20 @@ const msgHandler = async (client, message) => {
                     })
                 break;
 
+            case '#google' :
+                if (args.length === 1) return await client.reply(from, 'kirim perintah *#google*\ncontoh : #google babi', id)
+                const queryGoogle = body.slice(8)
+                axios.get(`https://api.be-line.me/googlesearch?search=${queryGoogle}&page=1`)
+                    .then(async (res) => {
+                        var result = 'Berikut hasil yang kudapetin di gugel\n\n';
+                        for(var i = 0; i < res.data.result.length; i++){
+                            result += `-${res.data.result[i].title}\n${res.data.result[i].url}\n\n`
+                        }
+                        await client.reply(from, result, id)
+                    })
+                    .catch((err)=> console.log(err))
+            break;
+
             case '#say':
                 if(args.length === 1) return await client.reply(from, 'Kirim perintah *#say* [id, en, jp, ar] [teks],\ncontoh *#say* id halo anak babi', id)
                 const ttsId = require('node-gtts')('id')
