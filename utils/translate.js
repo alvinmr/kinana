@@ -1,9 +1,9 @@
-const {default:translate} = require('google-translate-open-api')
+const translate = require('@vitalets/google-translate-api')
 
-const trans = (text, lang) => new Promise(async (resolve, reject) => {
+const trans = (text, lang) => new Promise( (resolve, reject) => {
         console.log(`Translate into ${lang}`)
-        await translate(text, {tld: 'cn', to: lang})
-            .then((text) => resolve(text.data[0]))
+        translate(text, {client: 'gtx', to: lang})
+            .then((res) => resolve(res.text))
             .catch((err) => reject(err))    
     })
 

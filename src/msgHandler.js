@@ -4,7 +4,6 @@ const moment = require('moment-timezone')
 const { decryptMedia } = require('@open-wa/wa-automate')
 const axios =  require('axios')
 const Text = require('../libs/texts/id.js')
-const cheerio = require('cheerio')
 const request = require('request')
 require('dotenv').config()
 
@@ -33,7 +32,7 @@ const msgHandler = async (client, message) => {
         const mess = {
             wait: '[ WAIT ] Sedang di proses⏳ silahkan tunggu sebentar',
             error: {
-                St: '[ ERROR ] Kirim gambar dengan caption *#sticker* atau tag gambar yang sudah dikirim',
+                St: '[ ERROR ] Kirim gambar/video dengan caption *#sticker* atau reply gambar/video yang sudah dikirim',
                 Qm: '[ ERROR ] Terjadi kesalahan, mungkin themenya tidak tersedia!',
                 Yt3: '[ ERROR ] Terjadi kesalahan, tidak dapat meng konversi ke mp3!',
                 Yt4: '[ ERROR ] Terjadi kesalahan, mungkin error di sebabkan oleh sistem.',
@@ -59,17 +58,6 @@ const msgHandler = async (client, message) => {
         if (!isGroupMsg) console.log('\x1b[1;31m~\x1b[1;37m>', '[\x1b[1;32mMSG\x1b[1;37m]', time, color(msgs(command)), 'from', color(pushname))
         if (isGroupMsg) console.log('\x1b[1;31m~\x1b[1;37m>', '[\x1b[1;32mMSG\x1b[1;37m]', time, color(msgs(command)), 'from', color(pushname), 'in', color(name || formattedTitle))
         if (isBlocked) return
-
-        // Handle Spam message
-        // if (isCmd && isFiltered(from) && !isGroupMsg) return console.log(color('[SPAM]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname))
-        // if (isCmd && isFiltered(from) && isGroupMsg) return console.log(color('[SPAM]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname),'in', color(name || formattedTitle))
-        
-        // if (!isCmd && !isGroupMsg) return console.log('[RECV]', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), 'Message from', color(pushname)) 
-        // if (!isCmd && isGroupMsg) return console.log('[RECV]', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), 'Message from', color(pushname), 'in', color(name || formattedTitle)) 
-        // if (isCmd && !isGroupMsg) console.log(color('[EXEC]'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname)) 
-        // if (isCmd && isGroupMsg) console.log(color('[EXEC]'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname), 'in', color(name || formattedTitle)) 
-
-        // addFilter(from)
 
         switch (command) {
             case '#tnc':
@@ -99,14 +87,17 @@ const msgHandler = async (client, message) => {
                 break;
             case '#sticker' :
             case '#stiker' :
-                if (isMedia && type === 'image') {
+                if (isMedia && type === 'image' || type === 'video') {
+                    console.log(message);
                     const mediaData = await decryptMedia(message, uaOverride)
                     const imageBase64 = `data:${mimetype};base64,${mediaData.toString('base64')}`
-                    await client.sendImageAsSticker(from, imageBase64)
-                } else if (quotedMsg && quotedMsg.type == 'image') {
+                    if(type === 'image') return await client.sendImageAsSticker(from, imageBase64)
+                    if(type === 'video') return await client.sendMp4AsSticker(from, imageBase64)
+                } else if (quotedMsg && quotedMsg.type == 'image' || quotedMsg.type == 'video') {
                     const mediaData = await decryptMedia(quotedMsg, uaOverride)
                     const imageBase64 = `data:${quotedMsg.mimetype};base64,${mediaData.toString('base64')}`
-                    await client.sendImageAsSticker(from, imageBase64)
+                    if(quotedMsg.type === 'image') return await client.sendImageAsSticker(from, imageBase64)
+                    if(quotedMsg.type === 'video') return await client.sendMp4AsSticker(from, imageBase64)
                 } else if (args.length === 2) {
                     const url = args[1]
                     if (isUrl(url)) {
@@ -157,8 +148,8 @@ const msgHandler = async (client, message) => {
                 if (!quotedMsg) return client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
                 const quoteText = quotedMsg.type == 'chat' ? quotedMsg.body : quotedMsg.type == 'image' ? quotedMsg.caption : ''                                ;
                 trans(quoteText, args[1])
-                    .then((result) => client.reply(from, `${quoteText} => ${result}`, quotedMsg.chatId))
-                    .catch(() => client.reply(from, 'Error, Kode bahasa salah.', id))
+                    .then((result) => client.reply(from, `${result}`, quotedMsg.chatId))
+                    .catch((err) => console.log(err))
                 break
 
             case '#bosen' :
@@ -185,20 +176,28 @@ const msgHandler = async (client, message) => {
 
             case '#arti' :
                 if (args.length === 1) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)                
-                nama = body.slice(6)
+                var nama = body.slice(6)
 
-                request.get({
-                    headers: {'content-type' : 'application/x-www-form-urlencoded'},
-                    url:     'http://www.primbon.com/arti_nama.php?nama1='+ nama +'&proses=+Submit%21+',
-                }, async (response, body) => {
-                    let $ = cheerio.load(body);
-                    var y = $.html().split('arti:')[1];
-                    var t = y.split('method="get">')[1];
-                    var f = y.replace(t ," ");
-                    var x = f.replace(/<br\s*[\/]?>/gi, "\n");
-                    var h  = x.replace(/<[^>]*>?/gm, '');
-                    await client.reply(from, `Nama : *${nama}* \nMemiliki arti : ${h}`, id)
-                })
+                axios.get(`https://api.be-line.me/primbon/nama?nama=${nama}`)
+                        .then(async (res) => {
+                            await client.reply(from, `Nama : ${nama}\n${res.data.result}`, id)
+                        })
+                        .catch(async () => {
+                            await client.reply(from, 'kayanya ada yang salah deh', id)
+                        })
+                break;
+
+            case '#zodiac':
+            case '#zodiak':
+                if (args.length === 1) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)                
+                var zodiak = args[1]
+                axios.get(`https://api.be-line.me/primbon/bintang?zodiac=${zodiak}`)
+                        .then(async (res) => {
+                            client.sendImage(from, `Zodiac : ${zodiak} \nres.data.result.img`,'zodiak.jpg', res.data.result.information, id) 
+                        })
+                        .catch(async () => {
+                            await client.reply(from, 'kayanya ada yang salah deh', id)
+                        })
                 break;
 
             case '#kecocokan' :
@@ -206,19 +205,13 @@ const msgHandler = async (client, message) => {
                 if (args[2] !== '|') return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
                 const nama1 = args[1]
                 const nama2 = args[3]
-                request.get({
-                    headers: {'content-type' : 'application/x-www-form-urlencoded'},
-                    url:     'http://www.primbon.com/kecocokan_nama_pasangan.php?nama1='+ nama1 +'&nama2='+ nama2 +'&proses=+Submit%21+',
-                }, async (response, body) => {
-                    let $ = cheerio.load(body);
-                    var y = $.html().split('<b>KECOCOKAN JODOH BERDASARKAN NAMA PASANGAN</b><br><br>')[1];
-                    var t = y.split('.<br><br>')[1];
-                    var f = y.replace(t ," ");
-                    var x = f.replace(/<br\s*[\/]?>/gi, "\n");
-                    var h  = x.replace(/<[^>]*>?/gm, '');
-                    var d = h.replace("&amp;", '&')
-                    await client.reply(from, `${d}`, id)
-                })
+                axios.get(`https://api.be-line.me/primbon/kecocokan?nama1=${nama1}&nama2=${nama2}`)
+                        .then(async (res) => {
+                            await client.reply(from, res.data.result, id)
+                        })
+                        .catch(async () => {
+                            await client.reply(from, 'kayanya ada yang salah deh', id)
+                        })
                 break;
                     
 
@@ -305,6 +298,7 @@ const msgHandler = async (client, message) => {
                 break;
             case '#bot' : 
                 const text = body.slice(5)
+                if (args.length === 1) return await client.reply(from, 'kirim perintah *#bot*\ncontoh : #bot maen yu', id)
                 const simi = await axios.get(`https://api.be-team.me/simisimi?text=${text}&lang=id`, {
                     headers: {
                         'apiKey': apiKey
@@ -315,8 +309,9 @@ const msgHandler = async (client, message) => {
                 break;
 
             case '#twt': 
-                await client.reply(from, 'tunggu ya', id)
-                const linkTwt = body.slice(5)
+                if (args.length === 1) return await client.reply(from, 'kirim perintah *#twt*\ncontoh : #twt https://twitter.com/dsyrhmw/status/1339135315047378944', id)
+                await client.reply(from, mess.wait, id)
+                const linkTwt = args[1]
                 const isValidLink = linkTwt.match(new RegExp(/http(?:s)?:\/\/(?:www\.)?twitter\.com\/([a-zA-Z0-9_]+)/))
                 if(!isValidLink) return await client.reply(from, 'ganemu nih hehehew. coba lagi', id)
                 const twt = await axios.get(`https://api.be-team.me/twitter?url=${linkTwt}`, {

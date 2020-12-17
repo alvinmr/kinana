@@ -2,53 +2,57 @@ const textMenu = (pushname) => {
     return `halo, ${pushname}! 👋️
 nih menu menunya🎉
 sticker creator:
-1. *#sticker*
-Untuk merubah gambar menjadi sticker. 
-Penggunaan: kirim gambar dengan caption #sticker atau balas gambar yang sudah dikirim dengan #sticker
+*#sticker*
+Untuk merubah gambar/video menjadi sticker. 
+Penggunaan: kirim gambar/video dengan caption #sticker atau balas gambar yang sudah dikirim dengan #sticker
 
-2. *#sticker* _<url / link gambar>_
-Untuk merubah gambar dari url menjadi sticker. 
+*#sticker* _<url / link gambar/video>_
+Untuk merubah gambar/video dari url menjadi sticker. 
 Penggunaan: kirim pesan dengan format *#sticker https://memegenerator.net/img/instances/46952448.jpg*
 
-3. *#gifsticker* _<Giphy URL>_ / *#stickergif* _<Giphy URL>_
+*#gifsticker* _<Giphy URL>_ / *#stickergif* _<Giphy URL>_
 Untuk merubah gif menjadi sticker (Giphy Only)
 Penggunaan: Kirim pesan dengan format *gifsticker https://media.giphy.com/media/JUvI2c1ddyzkwK4RlV/giphy.gif*
 
 
 Lain-lain:
-1. *#tr* _<kode bahasa>_
+*#tr* _<kode bahasa>_
 Untuk mengartikan pesan menjadi bahasa yang ditentukan.
 Penggunaan: Balas/quote/reply pesan yang ingin kamu translate dengan _*#translate id*_ <- id adalah kode bahasa. kode bahasa dapat dilihat di *https://bit.ly/33FVldE*
 
-2. *#say* [id, jp, ar, en] _<teks>_
+*#say* [id, jp, ar, en] _<teks>_
 Mengubah teks menjadi suara dengan batas teks 250 kata
 Penggunaan : #say id anak babi kalian
 
-3. *#wiki* _<kata kunci>_
+*#wiki* _<kata kunci>_
 Mencari penjelasan berdasarkan wikipedia sesuai dengan kata kunci yang dikirimkan
 Penggunaan : #wiki anjing
 
-4. *#arti _<nama kamu>_* (SEMENTARA MASI BELOM BISA)
+*#arti _<nama kamu>_*
 Mencari arti nama
-Penggunaan : #artinama yanto
+Penggunaan : #arti yanto
 
-5. *#kecocokan* _<nama 1>_ | _<nama 2>_ (SEMENTARA MASI BELOM BISA)
+*#kecocokan* _<nama 1>_ | _<nama 2>_
 Mengecek kecocokan pasangan berdasarkan nama
 Penggunaan : #kecocokan jodi | akbar
 
-6. *#gabut*
+*#zodiac* _<zodiac>_ 
+Ramalan zodiac harian
+Penggunaan : #zodiac aries
+
+*#gabut*
 Memberi sebuah saran agar kamu ga gabut
 Penggunaan : #gabut
 
-7. *#apakah* _<pertanyaanmu>_
+*#apakah* _<pertanyaanmu>_
 Menjawab sebuh pertanyaanmu
 Penggunaan : #apakah aku ganteng bot ?
 
-8. *#siapakah* _<pertanyaanmu>_
+*#siapakah* _<pertanyaanmu>_
 Random ngetag orang yang ada di grup mu
 Penggunaan : #siapakah orang paling babi ?
 
-9. *#twt* _<link post twitter>_
+*#twt* _<link post twitter>_
 mendownload postingan video / foto di twitter
 Penggunaan : #twt https://twitter.com/txtdrpemerintah/status/1335928302939242497
 
