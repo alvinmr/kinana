@@ -193,7 +193,7 @@ const msgHandler = async (client, message) => {
                 var zodiak = args[1]
                 axios.get(`https://api.be-line.me/primbon/bintang?zodiac=${zodiak}`)
                         .then(async (res) => {
-                            client.sendImage(from, `Zodiac : ${zodiak} \nres.data.result.img`,'zodiak.jpg', res.data.result.information, id) 
+                            client.sendImage(from, res.data.result.img,'zodiak.jpg', `Zodiac : ${zodiak} \n${res.data.result.information}`, id) 
                         })
                         .catch(async () => {
                             await client.reply(from, 'kayanya ada yang salah deh', id)
