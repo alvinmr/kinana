@@ -28,6 +28,10 @@ Penggunaan : #say id anak babi kalian
 Mencari penjelasan berdasarkan wikipedia sesuai dengan kata kunci yang dikirimkan
 Penggunaan : #wiki anjing
 
+*#google* _<kata kunci>_
+Mencari penjelasan berdasarkan google search sesuai dengan kata kunci yang dikirimkan
+Penggunaan : #google anjing
+
 *#arti _<nama kamu>_*
 Mencari arti nama
 Penggunaan : #arti yanto
