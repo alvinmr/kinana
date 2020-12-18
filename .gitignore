@@ -3,3 +3,4 @@ libs/tts
 .node-persist
 session.data.json
 .env
+src/tmp

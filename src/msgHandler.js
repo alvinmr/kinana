@@ -5,6 +5,8 @@ const { decryptMedia } = require('@open-wa/wa-automate')
 const axios =  require('axios')
 const Text = require('../libs/texts/id.js')
 const request = require('request')
+const util = require('util')
+const exec = util.promisify(require('child_process').exec)
 require('dotenv').config()
 
 
@@ -342,6 +344,31 @@ const msgHandler = async (client, message) => {
                     let linkPhoto = media.media_url
                     await client.sendImage(from, linkPhoto, 'twt.jpg', 'Nih photonya', id)
                 }
+                break;
+
+            case '#play':
+                var crypto = require("crypto")
+                const fs = require('fs')
+                var fileName = crypto.randomBytes(20).toString('hex')
+                const search = body.slice(4)
+                await client.reply(from, mess.wait, id)
+                await axios.get(`https://api.be-team.me/ytmp3?search=${search}`, {
+                    headers: {
+                        'apiKey': apiKey
+                    }
+                }).then(async (res) => {
+                    await exec(`wget -O src/tmp/${fileName}.mp3 ${res.data.result.url}`)
+                            .then(async ()=> {
+                                await client.sendPtt(from, `./src/tmp/${fileName}.mp3`, id)
+                                
+                            })
+                            .catch(async () => {
+                                await client.reply(from, 'kayanya ada error hehe', id)
+                            })
+                    fs.unlinkSync(`./src/${fileName}.mp3`)
+                })
+                
+
                 break;
         
             default:

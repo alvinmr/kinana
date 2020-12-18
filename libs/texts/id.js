@@ -56,6 +56,10 @@ Penggunaan : #apakah aku ganteng bot ?
 Random ngetag orang yang ada di grup mu
 Penggunaan : #siapakah orang paling babi ?
 
+*#play* _<judul lagu dan penyanyi>_
+mengirimkan file lagu sesuai perintahmu
+Penggunaan : #play apa elo tega
+
 *#twt* _<link post twitter>_
 mendownload postingan video / foto di twitter
 Penggunaan : #twt https://twitter.com/txtdrpemerintah/status/1335928302939242497
