@@ -360,12 +360,11 @@ const msgHandler = async (client, message) => {
                     await exec(`wget -O src/tmp/${fileName}.mp3 ${res.data.result.url}`)
                             .then(async ()=> {
                                 await client.sendPtt(from, `./src/tmp/${fileName}.mp3`, id)
-                                
                             })
                             .catch(async () => {
                                 await client.reply(from, 'kayanya ada error hehe', id)
                             })
-                    fs.unlinkSync(`./src/tmp/${fileName}.mp3`)
+                    await fs.unlinkSync(`./src/tmp/${fileName}.mp3`)
                 })
                 
 
