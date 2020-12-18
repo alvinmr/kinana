@@ -365,7 +365,7 @@ const msgHandler = async (client, message) => {
                             .catch(async () => {
                                 await client.reply(from, 'kayanya ada error hehe', id)
                             })
-                    fs.unlinkSync(`./src/${fileName}.mp3`)
+                    fs.unlinkSync(`./src/tmp/${fileName}.mp3`)
                 })
                 
 
