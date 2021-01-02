@@ -92,14 +92,6 @@ const msgHandler = async (client, message) => {
                 await client.reply(from, `Broadcast sukses, total chat ${allChat.length}`, id)
                 break;
 
-            case '#del' :
-                if (!isGroupAdmins) return await client.reply(from, 'ups cuma bisa admin grup xixixi', id)
-                if (!quotedMsg) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
-                if (!quotedMsgObj.fromMe) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
-                // console.log(quotedMsgObj);
-                await client.deleteMessage(quotedMsgObj.chatId, quotedMsgObj.id)
-            break;
-
             case '#sticker' :
             case '#stiker' :
                 if (isMedia && type === 'image' || type === 'video') {
@@ -403,32 +395,90 @@ const msgHandler = async (client, message) => {
                         'apiKey': apiKey
                     }
                 }).then(async (res) => {
-                    if(!res.data.status){
-                        await client.reply(from, res.data.result.title, id)
+                    if(res.data.status){
+                        await client.reply(from, `Searching :  *"${res.data.result.title}"* \nTunggu bentar ya`, id)
                         await exec(`wget -O src/tmp/${fileName}.mp3 ${res.data.result.url}`)
                                 .then(async ()=> {
                                     await client.sendPtt(from, `./src/tmp/${fileName}.mp3`, id)
                                                 .then(() => {
                                                     fs.unlinkSync(`./src/tmp/${fileName}.mp3`)
-                                                }).catch(async () => {
+                                                })
+                                                .catch(async () => {
                                                     await client.reply(from, 'kayanya ada error / musiknya kepanjangan hehe. coba lagi deh', id)
+                                                    fs.unlinkSync(`./src/tmp/${fileName}.mp3`)
                                                 })
                                 })
                                 .catch(async () => {
                                     await client.reply(from, 'kayanya ada error / musiknya kepanjangan hehe. coba lagi deh', id)
+                                    fs.unlinkSync(`./src/tmp/${fileName}.mp3`)
                                 })
                     }
                     
                 }).catch(async () => {
                     await client.reply(from, 'kayanya ada error / musiknya kepanjangan hehe. coba lagi deh', id)
                 })
-                
-
                 break;
+
+            case '#kick':
+                if (!isGroupMsg) return await client.reply(from, 'mau ngapain make command ini ? ini bukan grup woi', id)
+                if (!isGroupAdmins) return await client.reply(from, 'ups cuma bisa admin grup xixixi', id)
+                if (!isBotGroupAdmins) return await client.reply(from, 'gagal, jadiin aku admin dulu lahhh', id)
+                if (mentionedJidList.length === 0) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
+                if (mentionedJidList[0] === botNumber) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
+                await client.sendTextWithMentions(from, `Siap diterima, mengeluarkan:\n${mentionedJidList.map(x => `@${x.replace('@c.us', '')}`).join('\n')}`)
+                for (let i = 0; i < mentionedJidList.length; i++) {
+                    if (groupAdmins.includes(mentionedJidList[i])) return await client.sendText(from, 'Gagal, kamu tidak bisa mengeluarkan admin grup.')
+                    await client.removeParticipant(groupId, mentionedJidList[i])
+                }
+            break;
+
+            case '#promote':
+                if (!isGroupMsg) return await client.reply(from, 'mau ngapain make command ini ? ini bukan grup woi', id)
+                if (!isGroupAdmins) return await client.reply(from, 'ups cuma bisa admin grup xixixi', id)
+                if (!isBotGroupAdmins) return await client.reply(from, 'gagal, jadiin aku admin dulu lahhh', id)
+                if (mentionedJidList.length != 1) return await client.reply(from, 'gagal, cuma bisa buat 1 user yahh xixixi', id)
+                if (groupAdmins.includes(mentionedJidList[0])) return await client.reply(from, 'Maaf, user tersebut sudah menjadi admin. [Bot is Admin]', id)
+                if (mentionedJidList[0] === botNumber) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
+                await client.promoteParticipant(groupId, mentionedJidList[0])
+                await client.sendTextWithMentions(from, `Siap diterima, menambahkan @${mentionedJidList[0].replace('@c.us', '')} sebagai admin.`)
+            break;
+
+            case '#demote':
+                if (!isGroupMsg) return await client.reply(from, 'mau ngapain make command ini ? ini bukan grup woi', id)
+                if (!isGroupAdmins) return await client.reply(from, 'ups cuma bisa admin grup xixixi', id)
+                if (!isBotGroupAdmins) return await client.reply(from, 'gagal, jadiin aku admin dulu lahhh', id)
+                if (mentionedJidList.length !== 1) return await client.reply(from, 'gagal, cuma bisa buat 1 user yahh xixixi', id)
+                if (!groupAdmins.includes(mentionedJidList[0])) return await client.reply(from, 'gagal, dia bukan admin ngapain mau di demote ?', id)
+                if (mentionedJidList[0] === botNumber) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
+                await client.demoteParticipant(groupId, mentionedJidList[0])
+                await client.sendTextWithMentions(from, `Siapp diterima, menghapus jabatan @${mentionedJidList[0].replace('@c.us', '')}.`)
+            break;
+
+            case '#del' :
+                if (!isGroupAdmins) return await client.reply(from, 'ups cuma bisa admin grup xixixi', id)
+                if (!quotedMsg) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
+                if (!quotedMsgObj.fromMe) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
+                // console.log(quotedMsgObj);
+                await client.deleteMessage(quotedMsgObj.chatId, quotedMsgObj.id)
+            break;
+
+            case '#bye':
+                if (!isGroupMsg) return await client.reply(from, 'mau ngapain make command ini ? ini bukan grup woi', id)
+                if (!isGroupAdmins) return await client.reply(from, 'ups cuma bisa admin grup xixixi', id)
+                client.sendText(from, 'Good bye... ( ⇀‸↼‶ )').then(() => client.leaveGroup(groupId))
+            break;
+
         
             default:
                 break;
         }
+        const randomQuote = await axios.get('http://api.quotable.io/random')
+        const kataKasar = ["anjing", "anjg", "bangsat", "kontol", "bgst", "kntl", "ngtd", "ngentot", "ngntt"]
+        var apakahkasar = kataKasar.some(word => body.toLowerCase().includes(word))
+        if (apakahkasar) return await client.reply(from, 'sante bg jangan badword dosa', id)
+        if (body.toLowerCase().includes("pagi")) return await client.reply(from, `pagi juga, \nRandom quote untuk memulai pagimu : \n_"${randomQuote.data.content}"_`, id)
+
+        
         
         
     } catch (error) {
