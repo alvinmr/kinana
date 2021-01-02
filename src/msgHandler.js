@@ -73,7 +73,7 @@ const msgHandler = async (client, message) => {
             case '#help':
             case '#menu':
                 await client.reply(from, Text.textMenu(pushname), id)
-                // if (isGroupAdmins) return await client.sendText(from, Text.textAdmin())
+                if (isGroupAdmins) return await client.sendText(from, Text.textAdmin())
                 break;
 
             case '#speed':
