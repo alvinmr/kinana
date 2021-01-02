@@ -6,7 +6,7 @@ sticker creator:
 Untuk merubah gambar/video menjadi sticker. 
 Penggunaan: kirim gambar/video dengan caption #sticker atau balas gambar yang sudah dikirim dengan #sticker
 
-*#sticker* _<url / link gambar/video>_
+*#sticker* _<url atau link gambar/video>_
 Untuk merubah gambar/video dari url menjadi sticker. 
 Penggunaan: kirim pesan dengan format *#sticker https://memegenerator.net/img/instances/46952448.jpg*
 
@@ -64,6 +64,14 @@ Penggunaan : #play apa elo tega
 mendownload postingan video / foto di twitter
 Penggunaan : #twt https://twitter.com/txtdrpemerintah/status/1335928302939242497
 
+*#ig* _<link post ig>_
+mendownload postingan video / foto di instagram
+Penggunaan : #ig https://www.instagram.com/p/CJi8O9TH1ky/
+
+#nulis _<kata yang ingin ditulis>_
+menulis perkataanmu ke buku ea
+Penggunaan : #nulis ai lop u
+
 
 Info Bot :
 
@@ -91,10 +99,7 @@ Untuk mempromosikan member menjadi Admin grup.
 Untuk demosikan Admin grup.
 
 4. *#tagall*
-Untuk mention semua member grup.
-
-5. *#del*
-Untuk menghapus pesan bot (balas pesan bot dengan #del)`
+Untuk mention semua member grup.`
 }
 
 const textDonasi = () => {
