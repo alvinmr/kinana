@@ -65,18 +65,22 @@ const msgHandler = async (client, message) => {
             case '#tnc':
                 await client.reply(from, Text.textTnC(), id)
                 break;
+
             case '#donasi':
                 await client.reply(from, Text.textDonasi(), id)
                 break;
+
             case '#help':
             case '#menu':
                 await client.reply(from, Text.textMenu(pushname), id)
                 // if (isGroupAdmins) return await client.sendText(from, Text.textAdmin())
                 break;
+
             case '#speed':
             case '#ping':
                 await client.reply(from, `Pong!!!!\nSpeed: ${processTime(t, moment())} s`, id)
                 break;
+
             case '#bc':
                 if(!isOwner) return await client.reply(from, 'ogah kau bukan yang buat bot ini', id)
                 let msg = body.slice(4)
@@ -87,6 +91,15 @@ const msgHandler = async (client, message) => {
                 }
                 await client.reply(from, `Broadcast sukses, total chat ${allChat.length}`, id)
                 break;
+
+            case '#del' :
+                if (!isGroupAdmins) return await client.reply(from, 'ups cuma bisa admin grup xixixi', id)
+                if (!quotedMsg) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
+                if (!quotedMsgObj.fromMe) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
+                // console.log(quotedMsgObj);
+                await client.deleteMessage(quotedMsgObj.chatId, quotedMsgObj.id)
+            break;
+
             case '#sticker' :
             case '#stiker' :
                 if (isMedia && type === 'image' || type === 'video') {
@@ -150,7 +163,7 @@ const msgHandler = async (client, message) => {
                 if (!quotedMsg) return client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
                 const quoteText = quotedMsg.type == 'chat' ? quotedMsg.body : quotedMsg.type == 'image' ? quotedMsg.caption : ''                                ;
                 trans(quoteText, args[1])
-                    .then((result) => client.reply(from, `${result}`, quotedMsg.chatId))
+                    .then((result) => client.reply(from, `${result}`, id))
                     .catch((err) => console.log(err))
                 break
 
@@ -279,6 +292,18 @@ const msgHandler = async (client, message) => {
                 }
                 break;
 
+            case '#delall':
+                if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
+                if (!isOwner) return await client.reply(from, 'yeeu lu sapa bukan yang buat bot ini enak aje', id)
+                const allChatDel = await client.getAllChatIds()
+                for (let ids of allChatDel){
+                    var idc = await client.getChatById(ids)
+                    if(!idc.isReadOnly) await client.deleteChat(ids)
+                }
+                await client.reply(from, `delete sukses, total chat dihapus ${allChat.length}`, id)
+                
+            break;
+
             case '#tagall':
                 if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
                 if (!isGroupAdmins || !isOwner) return await client.reply(from, 'Perintah ini cuma bisa dipake sama admin', id)
@@ -312,6 +337,7 @@ const msgHandler = async (client, message) => {
                 if(!wancak.data.result) return await client.reply(from, 'sori kaka fitur ini lagi limit. biar ga sering limit, kuy donasi ke https://saweria.co/alvinmr', id)
                 await client.sendImage(from, wancak.data.result.src,'meme.jpg', wancak.data.result.title, id)                
                 break;
+
             case '#bot' : 
                 const text = body.slice(5)
                 if (args.length === 1) return await client.reply(from, 'kirim perintah *#bot*\ncontoh : #bot maen yu', id)
@@ -329,7 +355,7 @@ const msgHandler = async (client, message) => {
                 await client.reply(from, mess.wait, id)
                 const linkTwt = args[1]
                 const isValidLink = linkTwt.match(new RegExp(/http(?:s)?:\/\/(?:www\.)?twitter\.com\/([a-zA-Z0-9_]+)/))
-                if(!isValidLink) return await client.reply(from, 'ganemu nih hehehew. coba lagi', id)
+                if(!isValidLink) return await client.reply(from, 'hayo bukan link post twitter nih hehehew. coba lagi', id)
                 const twt = await axios.get(`https://api.be-team.me/twitter?url=${linkTwt}`, {
                     headers: {
                         'apiKey': apiKey
@@ -346,28 +372,55 @@ const msgHandler = async (client, message) => {
                 }
                 break;
 
+            case '#ig' :
+                if (args.length === 1) return await client.reply(from, 'kirim perintah *#ig*\ncontoh : #ig https://www.instagram.com/p/CJi8O9TH1ky/', id)
+                const linkIg = args[1]
+                const isValidLinkIg = linkIg.match(new RegExp(/(https?:\/\/(?:www\.)?instagram\.com\/p\/([^/?#&]+)).*/g))
+                if(!isValidLinkIg) return await client.reply(from, 'hayo bukan link post Instagram nih hehehew. coba lagi', id)
+                const ig = await axios.get(`https://api.be-team.me/instapost?url=${linkIg}`, {
+                    headers: {
+                        'apiKey': apiKey
+                    }
+                })
+                if(ig.data.status != 200) return await client.reply(from, 'sori kaka fitur ini lagi limit. biar ga sering limit, kuy donasi ke https://saweria.co/alvinmr', id)
+                for(var i = 0; i < ig.data.result.media.length; i++){
+                    if(ig.data.result.media[i].is_video){
+                        await client.sendFileFromUrl(from, ig.data.result.media[i].video, 'ig.mp4', 'Nih vidnya', id)
+                    } else {
+                        await client.sendImage(from, ig.data.result.media[i].img, 'ig.jpg', 'Nih photonya', id)
+                    }
+                }
+                break;
+
+            case '#p' :
             case '#play':
                 var crypto = require("crypto")
                 const fs = require('fs')
                 var fileName = crypto.randomBytes(20).toString('hex')
                 const search = body.slice(4)
-                await client.reply(from, mess.wait, id)
                 await axios.get(`https://api.be-team.me/ytmp3?search=${search}`, {
                     headers: {
                         'apiKey': apiKey
                     }
                 }).then(async (res) => {
-                    await exec(`wget -O src/tmp/${fileName}.mp3 ${res.data.result.url}`)
-                            .then(async ()=> {
-                                await client.sendPtt(from, `./src/tmp/${fileName}.mp3`, id)
-                                            .then(() => {
-                                                fs.unlinkSync(`./src/tmp/${fileName}.mp3`)
-                                            })
-                            })
-                            .catch(async () => {
-                                await client.reply(from, 'kayanya ada error hehe', id)
-                            })
+                    if(!res.data.status){
+                        await client.reply(from, res.data.result.title, id)
+                        await exec(`wget -O src/tmp/${fileName}.mp3 ${res.data.result.url}`)
+                                .then(async ()=> {
+                                    await client.sendPtt(from, `./src/tmp/${fileName}.mp3`, id)
+                                                .then(() => {
+                                                    fs.unlinkSync(`./src/tmp/${fileName}.mp3`)
+                                                }).catch(async () => {
+                                                    await client.reply(from, 'kayanya ada error / musiknya kepanjangan hehe. coba lagi deh', id)
+                                                })
+                                })
+                                .catch(async () => {
+                                    await client.reply(from, 'kayanya ada error / musiknya kepanjangan hehe. coba lagi deh', id)
+                                })
+                    }
                     
+                }).catch(async () => {
+                    await client.reply(from, 'kayanya ada error / musiknya kepanjangan hehe. coba lagi deh', id)
                 })
                 
 
