@@ -419,6 +419,14 @@ const msgHandler = async (client, message) => {
                 })
                 break;
 
+            case '#nulis' : 
+                const tulisan = body.slice(7)
+                // if (args.length === 1) return await client.reply(from, 'kirim perintah *#nulis*\ncontoh : #nulis apa aja', id)
+                const nulis = await axios.get(`https://st4rz.herokuapp.com/api/nulis?text=${tulisan}`)
+                if(nulis.data.status != 200) return await client.reply(from, 'sori kaka fitur ini lagi limit. biar ga sering limit, kuy donasi ke https://saweria.co/alvinmr', id)
+                await client.sendImage(from, nulis.data.result, 'tulis.jpg', 'nih tulisannya gan', id)
+            break;
+            // Fitur group
             case '#kick':
                 if (!isGroupMsg) return await client.reply(from, 'mau ngapain make command ini ? ini bukan grup woi', id)
                 if (!isGroupAdmins) return await client.reply(from, 'ups cuma bisa admin grup xixixi', id)
@@ -472,10 +480,10 @@ const msgHandler = async (client, message) => {
             default:
                 break;
         }
+        // const kataKasar = ["anjing", "anjg", "bangsat", "kontol", "bgst", "kntl", "ngtd", "ngentot", "ngntt"]
+        // var apakahkasar = kataKasar.some(word => body.toLowerCase().includes(word))
+        // if (apakahkasar) return await client.reply(from, 'sante bg jangan badword dosa', id)
         const randomQuote = await axios.get('http://api.quotable.io/random')
-        const kataKasar = ["anjing", "anjg", "bangsat", "kontol", "bgst", "kntl", "ngtd", "ngentot", "ngntt"]
-        var apakahkasar = kataKasar.some(word => body.toLowerCase().includes(word))
-        if (apakahkasar) return await client.reply(from, 'sante bg jangan badword dosa', id)
         if (body.toLowerCase().includes("pagi")) return await client.reply(from, `pagi juga, \nRandom quote untuk memulai pagimu : \n_"${randomQuote.data.content}"_`, id)
 
         
