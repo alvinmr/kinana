@@ -1,10 +1,9 @@
-const { addFilter, color, isFiltered, processTime, isUrl } =  require('../utils/index.js')
+const { color, processTime, isUrl } =  require('../utils/index.js')
 const { trans } =  require("../utils/translate.js")
 const moment = require('moment-timezone')
 const { decryptMedia } = require('@open-wa/wa-automate')
 const axios =  require('axios')
 const Text = require('../libs/texts/id.js')
-const request = require('request')
 const util = require('util')
 const exec = util.promisify(require('child_process').exec)
 require('dotenv').config()
@@ -486,16 +485,16 @@ const msgHandler = async (client, message) => {
                 break;
         }
         // const kataKasar = ["anjing", "anjg", "bangsat", "kontol", "bgst", "kntl", "ngtd", "ngentot", "ngntt"]
-        const kataSapaan = ["hai", "hi", "hello", "hey"]
+        const kataSapaan = ["hai", "hello", "hey"]
         const kataMalam = ["selamat malam", "met malam", "malam", "selamat malem", "met malem", "malem"]
         const kataSiang = ["selamat siang", "met siang", "siang"]
         const kataSore = ["selamat sore", "met sore", "sore"]
         // var apakahkasar = kataKasar.some(word => body.toLowerCase().includes(word))
         // if (apakahkasar) return await client.reply(from, 'sante bg jangan badword dosa', id)
-        var apakahNyapa = kataSapaan.some(word => caption.toLowerCase().includes(word) ? body.toLowerCase().includes(word) : false)
-        var apakahMalam = kataMalam.some(word => body.toLowerCase().includes(word))
-        var apakahSiang = kataSiang.some(word => body.toLowerCase().includes(word))
-        var apakahSore = kataSore.some(word => body.toLowerCase().includes(word))
+        var apakahNyapa = kataSapaan.some(word => commands.toLowerCase().includes(word))
+        var apakahMalam = kataMalam.some(word => commands.toLowerCase().includes(word))
+        var apakahSiang = kataSiang.some(word => commands.toLowerCase().includes(word))
+        var apakahSore = kataSore.some(word => commands.toLowerCase().includes(word))
         if (apakahNyapa) {
             const simi = await axios.get(`https://api.be-team.me/simisimi?text=hai&lang=id`, {
                 headers: {
@@ -528,7 +527,7 @@ const msgHandler = async (client, message) => {
             })
             await client.reply(from, simi.data.result, id)
         }
-        if (body.toLowerCase().includes("pagi")) {
+        if (commands.toLowerCase().includes("pagi")) {
             const randomQuote = await axios.get('http://api.quotable.io/random')
             await client.reply(from, `Pagi juga sobat, \n\nrandom quote untuk memulai pagimu : \n_"${randomQuote.data.content}"_`, id)
         }
