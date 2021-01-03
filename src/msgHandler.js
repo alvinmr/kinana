@@ -64,22 +64,22 @@ const msgHandler = async (client, message) => {
         switch (command) {
             case '#tnc':
                 await client.reply(from, Text.textTnC(), id)
-                break;
+            break;
 
             case '#donasi':
                 await client.reply(from, Text.textDonasi(), id)
-                break;
+            break;
 
             case '#help':
             case '#menu':
                 await client.reply(from, Text.textMenu(pushname), id)
                 if (isGroupAdmins) return await client.sendText(from, Text.textAdmin())
-                break;
+            break;
 
             case '#speed':
             case '#ping':
                 await client.reply(from, `Pong!!!!\nSpeed: ${processTime(t, moment())} s`, id)
-                break;
+            break;
 
             case '#bc':
                 if(!isOwner) return await client.reply(from, 'ogah kau bukan yang buat bot ini', id)
@@ -90,7 +90,7 @@ const msgHandler = async (client, message) => {
                     if(!idc.isReadOnly) await client.sendText(ids, `-BROADCAST BOT-\n\n${msg}`)
                 }
                 await client.reply(from, `Broadcast sukses, total chat ${allChat.length}`, id)
-                break;
+            break;
 
             case '#sticker' :
             case '#stiker' :
@@ -116,7 +116,7 @@ const msgHandler = async (client, message) => {
                 } else {
                         await client.reply(from, mess.error.St, id)
                 }
-                break;
+            break;
 
             case '#stikergif':
             case '#stickergif':
@@ -146,7 +146,7 @@ const msgHandler = async (client, message) => {
                 } else {
                     await client.reply(from, 'maaf, untuk saat ini sticker gif hanya bisa menggunakan link dari giphy.  [Giphy Only]', id)
                 }
-                break;
+            break;
                     
 
             case '#translate' :
@@ -157,7 +157,7 @@ const msgHandler = async (client, message) => {
                 trans(quoteText, args[1])
                     .then((result) => client.reply(from, `${result}`, id))
                     .catch((err) => console.log(err))
-                break
+            break
 
             case '#bosen' :
             case '#gabut' :
@@ -165,8 +165,9 @@ const msgHandler = async (client, message) => {
                 trans(boredText.data.activity, 'id')
                     .then((result) => client.reply(from, `Coba ${result.toLowerCase()}`, id))
                     .catch((err) => console.log(err) )
-                break;
+            break;
 
+            case '#apa' :
             case '#apakah' :
                 const apakah = require('node-gtts')('id')
                 const answer = ['iya', 'tidak', 'mungkin']
@@ -175,11 +176,11 @@ const msgHandler = async (client, message) => {
                 apakah.save('./libs/tts/resID.mp3', answer[randomAnsw], () => {
                     client.sendPtt(from, './libs/tts/resID.mp3', id)
                 })
-                break;
+            break;
 
             case '#berapakah' :
                 await client.reply(from, `babi kau ${pushname}`, id)
-                break;
+            break;
 
             case '#arti' :
                 if (args.length === 1) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)                
@@ -192,7 +193,7 @@ const msgHandler = async (client, message) => {
                         .catch(async () => {
                             await client.reply(from, 'kayanya ada yang salah deh', id)
                         })
-                break;
+            break;
 
             case '#zodiac':
             case '#zodiak':
@@ -205,7 +206,7 @@ const msgHandler = async (client, message) => {
                         .catch(async () => {
                             await client.reply(from, 'kayanya ada yang salah deh', id)
                         })
-                break;
+            break;
 
             case '#kecocokan' :
                 if (args.length === 1) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)                
@@ -219,7 +220,7 @@ const msgHandler = async (client, message) => {
                         .catch(async () => {
                             await client.reply(from, 'kayanya ada yang salah deh', id)
                         })
-                break;
+            break;
                     
 
             case '#wiki': 
@@ -235,8 +236,9 @@ const msgHandler = async (client, message) => {
                     .catch(async () => {
                         await client.reply(from, 'kayanya ada yang salah deh', id)
                     })
-                break;
+            break;
 
+            case '#cari' :
             case '#google' :
                 if (args.length === 1) return await client.reply(from, 'kirim perintah *#google*\ncontoh : #google babi', id)
                 const queryGoogle = body.slice(8)
@@ -282,7 +284,7 @@ const msgHandler = async (client, message) => {
                 } else {
                     await client.reply(from, 'Masukkan data bahasa : [id] untuk indonesia, [en] untuk inggris, [jp] untuk jepang, dan [ar] untuk arab', id)
                 }
-                break;
+            break;
 
             case '#delall':
                 if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
@@ -298,7 +300,7 @@ const msgHandler = async (client, message) => {
 
             case '#tagall':
                 if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
-                if (!isGroupAdmins || !isOwner) return await client.reply(from, 'Perintah ini cuma bisa dipake sama admin', id)
+                if (!isGroupAdmins) return await client.reply(from, 'Perintah ini cuma bisa dipake sama admin', id)
                 const grupMem = await client.getGroupMembers(groupId)              
                 let tag = `-Tag All-\n`
                 let idMem
@@ -307,8 +309,10 @@ const msgHandler = async (client, message) => {
                     tag += `@${idMem.replace(/@c.us/g, '')}\n`                                    
                 }                
                 await client.sendTextWithMentions(from, tag)
-                break;
+            break;
 
+            case '#sapa' :
+            case '#siapa' :
             case '#siapakah' :
                 if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
                 const jawaban = body.slice(1)
@@ -318,7 +322,7 @@ const msgHandler = async (client, message) => {
                 const grupMem2 = await client.getGroupMembers(groupId)
                 const randomTag = grupMem2[Math.floor(Math.random() * grupMem2.length)].id
                 await client.sendTextWithMentions(from, `${jawaban} \njawaban : @${randomTag.replace(/@c.us/g, '')}`)
-                break;
+            break;
 
             case '#1cak': 
                 const wancak = await axios.get('https://api.be-team.me/1cak', {
@@ -328,7 +332,7 @@ const msgHandler = async (client, message) => {
                 })
                 if(!wancak.data.result) return await client.reply(from, 'sori kaka fitur ini lagi limit. biar ga sering limit, kuy donasi ke https://saweria.co/alvinmr', id)
                 await client.sendImage(from, wancak.data.result.src,'meme.jpg', wancak.data.result.title, id)                
-                break;
+            break;
 
             case '#bot' : 
                 const text = body.slice(5)
@@ -340,7 +344,7 @@ const msgHandler = async (client, message) => {
                 })
                 if(simi.data.status != 200) return await client.reply(from, 'sori kaka fitur ini lagi limit. biar ga sering limit, kuy donasi ke https://saweria.co/alvinmr', id)
                 await client.reply(from, simi.data.result, id)
-                break;
+            break;
 
             case '#twt': 
                 if (args.length === 1) return await client.reply(from, 'kirim perintah *#twt*\ncontoh : #twt https://twitter.com/dsyrhmw/status/1339135315047378944', id)
@@ -362,7 +366,7 @@ const msgHandler = async (client, message) => {
                     let linkPhoto = media.media_url
                     await client.sendImage(from, linkPhoto, 'twt.jpg', 'Nih photonya', id)
                 }
-                break;
+            break;
 
             case '#ig' :
                 if (args.length === 1) return await client.reply(from, 'kirim perintah *#ig*\ncontoh : #ig https://www.instagram.com/p/CJi8O9TH1ky/', id)
@@ -382,9 +386,8 @@ const msgHandler = async (client, message) => {
                         await client.sendImage(from, ig.data.result.media[i].img, 'ig.jpg', 'Nih photonya', id)
                     }
                 }
-                break;
+            break;
 
-            case '#p' :
             case '#play':
                 var crypto = require("crypto")
                 const fs = require('fs')
@@ -417,8 +420,9 @@ const msgHandler = async (client, message) => {
                 }).catch(async () => {
                     await client.reply(from, 'kayanya ada error / musiknya kepanjangan hehe. coba lagi deh', id)
                 })
-                break;
+            break;
 
+            case '#tulis' :
             case '#nulis' : 
                 const tulisan = body.slice(7)
                 // if (args.length === 1) return await client.reply(from, 'kirim perintah *#nulis*\ncontoh : #nulis apa aja', id)
@@ -426,6 +430,7 @@ const msgHandler = async (client, message) => {
                 if(nulis.data.status != 200) return await client.reply(from, 'sori kaka fitur ini lagi limit. biar ga sering limit, kuy donasi ke https://saweria.co/alvinmr', id)
                 await client.sendImage(from, nulis.data.result, 'tulis.jpg', 'nih tulisannya gan', id)
             break;
+
             // Fitur group
             case '#kick':
                 if (!isGroupMsg) return await client.reply(from, 'mau ngapain make command ini ? ini bukan grup woi', id)
@@ -482,9 +487,15 @@ const msgHandler = async (client, message) => {
         }
         // const kataKasar = ["anjing", "anjg", "bangsat", "kontol", "bgst", "kntl", "ngtd", "ngentot", "ngntt"]
         const kataSapaan = ["hai", "hi", "hello", "hey"]
+        const kataMalam = ["selamat malam", "met malam", "malam", "selamat malem", "met malem", "malem"]
+        const kataSiang = ["selamat siang", "met siang", "siang"]
+        const kataSore = ["selamat sore", "met sore", "sore"]
         // var apakahkasar = kataKasar.some(word => body.toLowerCase().includes(word))
         // if (apakahkasar) return await client.reply(from, 'sante bg jangan badword dosa', id)
-        var apakahNyapa = kataSapaan.some(word => body.toLowerCase().includes(word))
+        var apakahNyapa = kataSapaan.some(word => caption.toLowerCase().includes(word) || body.toLowerCase().includes(word))
+        var apakahMalam = kataMalam.some(word => body.toLowerCase().includes(word))
+        var apakahSiang = kataSiang.some(word => body.toLowerCase().includes(word))
+        var apakahSore = kataSore.some(word => body.toLowerCase().includes(word))
         if (apakahNyapa) {
             const simi = await axios.get(`https://api.be-team.me/simisimi?text=hai&lang=id`, {
                 headers: {
@@ -493,6 +504,30 @@ const msgHandler = async (client, message) => {
             })
             await client.reply(from, simi.data.result, id)
         } 
+        if(apakahMalam){
+            const simi = await axios.get(`https://api.be-team.me/simisimi?text=selamat malam&lang=id`, {
+                headers: {
+                    'apiKey': apiKey
+                }
+            })
+            await client.reply(from, simi.data.result, id)
+        }
+        if(apakahSiang){
+            const simi = await axios.get(`https://api.be-team.me/simisimi?text=selamat siang&lang=id`, {
+                headers: {
+                    'apiKey': apiKey
+                }
+            })
+            await client.reply(from, simi.data.result, id)
+        }
+        if(apakahSore){
+            const simi = await axios.get(`https://api.be-team.me/simisimi?text=selamat sore&lang=id`, {
+                headers: {
+                    'apiKey': apiKey
+                }
+            })
+            await client.reply(from, simi.data.result, id)
+        }
         if (body.toLowerCase().includes("pagi")) {
             const randomQuote = await axios.get('http://api.quotable.io/random')
             await client.reply(from, `Pagi juga sobat, \n\nrandom quote untuk memulai pagimu : \n_"${randomQuote.data.content}"_`, id)
