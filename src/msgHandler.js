@@ -292,7 +292,7 @@ const msgHandler = async (client, message) => {
                     var idc = await client.getChatById(ids)
                     if(!idc.isReadOnly) await client.deleteChat(ids)
                 }
-                await client.reply(from, `delete sukses, total chat dihapus ${allChat.length}`, id)
+                await client.reply(from, `delete sukses, total chat dihapus ${allChatDel.length}`, id)
                 
             break;
 
@@ -481,10 +481,22 @@ const msgHandler = async (client, message) => {
                 break;
         }
         // const kataKasar = ["anjing", "anjg", "bangsat", "kontol", "bgst", "kntl", "ngtd", "ngentot", "ngntt"]
+        const kataSapaan = ["hai", "hi", "hello", "hey"]
         // var apakahkasar = kataKasar.some(word => body.toLowerCase().includes(word))
         // if (apakahkasar) return await client.reply(from, 'sante bg jangan badword dosa', id)
-        const randomQuote = await axios.get('http://api.quotable.io/random')
-        if (body.toLowerCase().includes("pagi")) return await client.reply(from, `pagi juga, \nRandom quote untuk memulai pagimu : \n_"${randomQuote.data.content}"_`, id)
+        var apakahNyapa = kataSapaan.some(word => body.toLowerCase().includes(word))
+        if (apakahNyapa) {
+            const simi = await axios.get(`https://api.be-team.me/simisimi?text=hai&lang=id`, {
+                headers: {
+                    'apiKey': apiKey
+                }
+            })
+            await client.reply(from, simi.data.result, id)
+        } 
+        if (body.toLowerCase().includes("pagi")) {
+            const randomQuote = await axios.get('http://api.quotable.io/random')
+            await client.reply(from, `Pagi juga sobat, \n\nrandom quote untuk memulai pagimu : \n_"${randomQuote.data.content}"_`, id)
+        }
 
         
         
