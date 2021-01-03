@@ -492,7 +492,7 @@ const msgHandler = async (client, message) => {
         const kataSore = ["selamat sore", "met sore", "sore"]
         // var apakahkasar = kataKasar.some(word => body.toLowerCase().includes(word))
         // if (apakahkasar) return await client.reply(from, 'sante bg jangan badword dosa', id)
-        var apakahNyapa = kataSapaan.some(word => caption.toLowerCase().includes(word) || body.toLowerCase().includes(word))
+        var apakahNyapa = kataSapaan.some(word => caption.toLowerCase().includes(word) ? body.toLowerCase().includes(word) : false)
         var apakahMalam = kataMalam.some(word => body.toLowerCase().includes(word))
         var apakahSiang = kataSiang.some(word => body.toLowerCase().includes(word))
         var apakahSore = kataSore.some(word => body.toLowerCase().includes(word))
