@@ -531,6 +531,9 @@ const msgHandler = async (client, message) => {
             const randomQuote = await axios.get('http://api.quotable.io/random')
             await client.reply(from, `Pagi juga sobat, \n\nrandom quote untuk memulai pagimu : \n_"${randomQuote.data.content}"_`, id)
         }
+        if (commands.toLowerCase().includes("dama")) {
+            await client.reply(from, `memek`, id)
+        }
 
         
         
