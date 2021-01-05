@@ -485,9 +485,6 @@ const msgHandler = async (client, message) => {
                 break;
         }
         
-        if (commands.toLowerCase().includes("dama")) {
-            await client.reply(from, `memek`, id)
-        }
 
         
         

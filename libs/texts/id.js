@@ -68,7 +68,7 @@ Penggunaan : #twt https://twitter.com/txtdrpemerintah/status/1335928302939242497
 mendownload postingan video / foto di instagram
 Penggunaan : #ig https://www.instagram.com/p/CJi8O9TH1ky/
 
-#nulis _<kata yang ingin ditulis>_
+*#nulis* _<kata yang ingin ditulis>_
 menulis perkataanmu ke buku ea
 Penggunaan : #nulis ai lop u
 
@@ -99,7 +99,10 @@ Untuk mempromosikan member menjadi Admin grup.
 Untuk demosikan Admin grup.
 
 4. *#tagall*
-Untuk mention semua member grup.`
+Untuk mention semua member grup.
+
+5. *#bye*
+Untuk menghapus bot:(.`
 }
 
 const textDonasi = () => {
