@@ -484,53 +484,7 @@ const msgHandler = async (client, message) => {
             default:
                 break;
         }
-        // const kataKasar = ["anjing", "anjg", "bangsat", "kontol", "bgst", "kntl", "ngtd", "ngentot", "ngntt"]
-        const kataSapaan = ["hai", "hello", "hey"]
-        const kataMalam = ["selamat malam", "met malam", "malam", "selamat malem", "met malem", "malem"]
-        const kataSiang = ["selamat siang", "met siang", "siang"]
-        const kataSore = ["selamat sore", "met sore", "sore"]
-        // var apakahkasar = kataKasar.some(word => body.toLowerCase().includes(word))
-        // if (apakahkasar) return await client.reply(from, 'sante bg jangan badword dosa', id)
-        var apakahNyapa = kataSapaan.some(word => commands.toLowerCase().includes(word))
-        var apakahMalam = kataMalam.some(word => commands.toLowerCase().includes(word))
-        var apakahSiang = kataSiang.some(word => commands.toLowerCase().includes(word))
-        var apakahSore = kataSore.some(word => commands.toLowerCase().includes(word))
-        if (apakahNyapa) {
-            const simi = await axios.get(`https://api.be-team.me/simisimi?text=hai&lang=id`, {
-                headers: {
-                    'apiKey': apiKey
-                }
-            })
-            await client.reply(from, simi.data.result, id)
-        } 
-        if(apakahMalam){
-            const simi = await axios.get(`https://api.be-team.me/simisimi?text=selamat malam&lang=id`, {
-                headers: {
-                    'apiKey': apiKey
-                }
-            })
-            await client.reply(from, simi.data.result, id)
-        }
-        if(apakahSiang){
-            const simi = await axios.get(`https://api.be-team.me/simisimi?text=selamat siang&lang=id`, {
-                headers: {
-                    'apiKey': apiKey
-                }
-            })
-            await client.reply(from, simi.data.result, id)
-        }
-        if(apakahSore){
-            const simi = await axios.get(`https://api.be-team.me/simisimi?text=selamat sore&lang=id`, {
-                headers: {
-                    'apiKey': apiKey
-                }
-            })
-            await client.reply(from, simi.data.result, id)
-        }
-        if (commands.toLowerCase().includes("pagi")) {
-            const randomQuote = await axios.get('http://api.quotable.io/random')
-            await client.reply(from, `Pagi juga sobat, \n\nrandom quote untuk memulai pagimu : \n_"${randomQuote.data.content}"_`, id)
-        }
+        
         if (commands.toLowerCase().includes("dama")) {
             await client.reply(from, `memek`, id)
         }
