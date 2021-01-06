@@ -91,6 +91,7 @@ const msgHandler = async (client, message) => {
                 await client.reply(from, `Broadcast sukses, total chat ${allChat.length}`, id)
             break;
 
+            case '#st' :
             case '#sticker' :
             case '#stiker' :
                 if (isMedia && type === 'image' || type === 'video') {
@@ -300,12 +301,19 @@ const msgHandler = async (client, message) => {
             case '#tagall':
                 if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
                 if (!isGroupAdmins) return await client.reply(from, 'Perintah ini cuma bisa dipake sama admin', id)
-                const grupMem = await client.getGroupMembers(groupId)              
+                console.log(quotedMsg);              
+                const grupMem = await client.getGroupMembers(groupId)
                 let tag = `-Tag All-\n`
+                if (args[1]){
+                    tag += `\nPesan : ${body.slice(8)}\n`
+                } else if(quotedMsg) {
+                    const quoteTextTag = quotedMsg.type == 'chat' ? quotedMsg.body : quotedMsg.type == 'image' ? quotedMsg.caption : quotedMsg.type == 'video' ? quotedMsg.caption : ''
+                    tag += `\nPesan : ${quoteTextTag}\n`
+                }
                 let idMem
                 for (let i = 0; i < grupMem.length; i++){
                     idMem = grupMem[i].id
-                    tag += `@${idMem.replace(/@c.us/g, '')}\n`                                    
+                    tag += `\n@${idMem.replace(/@c.us/g, '')}`                                    
                 }                
                 await client.sendTextWithMentions(from, tag)
             break;
@@ -391,34 +399,64 @@ const msgHandler = async (client, message) => {
                 var crypto = require("crypto")
                 const fs = require('fs')
                 var fileName = crypto.randomBytes(20).toString('hex')
-                const search = body.slice(4)
-                await axios.get(`https://api.be-team.me/ytmp3?search=${search}`, {
-                    headers: {
-                        'apiKey': apiKey
-                    }
-                }).then(async (res) => {
-                    if(res.data.status){
-                        await client.reply(from, `Searching :  *"${res.data.result.title}"* \nTunggu bentar ya`, id)
-                        await exec(`wget -O src/tmp/${fileName}.mp3 ${res.data.result.url}`)
-                                .then(async ()=> {
-                                    await client.sendPtt(from, `./src/tmp/${fileName}.mp3`, id)
-                                                .then(() => {
-                                                    fs.unlinkSync(`./src/tmp/${fileName}.mp3`)
-                                                })
-                                                .catch(async () => {
-                                                    await client.reply(from, 'kayanya ada error / musiknya kepanjangan hehe. coba lagi deh', id)
-                                                    fs.unlinkSync(`./src/tmp/${fileName}.mp3`)
-                                                })
-                                })
-                                .catch(async () => {
-                                    await client.reply(from, 'kayanya ada error / musiknya kepanjangan hehe. coba lagi deh', id)
-                                    fs.unlinkSync(`./src/tmp/${fileName}.mp3`)
-                                })
-                    }
-                    
-                }).catch(async () => {
-                    await client.reply(from, 'kayanya ada error / musiknya kepanjangan hehe. coba lagi deh', id)
-                })
+                const search = body.slice(6)
+                if (search.match(new RegExp(/(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/?.*(?:watch|embed)?(?:.*v=|v\/|\/)([\w-_]+)/gmi))) {
+                    await axios.get(`https://api.be-team.me/ytmp3?url=${search}`, {
+                        headers: {
+                            'apiKey': apiKey
+                        }
+                    }).then(async (res) => {
+                        if(res.data.status){
+                            await client.reply(from, `Searching :  *"${res.data.result.title}"* \nTunggu bentar ya`, id)
+                            await exec(`wget -O src/tmp/${fileName}.mp3 ${res.data.result.url}`)
+                                    .then(async ()=> {
+                                        await client.sendPtt(from, `./src/tmp/${fileName}.mp3`, id)
+                                                    .then(() => {
+                                                        fs.unlinkSync(`./src/tmp/${fileName}.mp3`)
+                                                    })
+                                                    .catch(async () => {
+                                                        await client.reply(from, 'kayanya ada error / musiknya kepanjangan hehe. coba lagi deh', id)
+                                                        fs.unlinkSync(`./src/tmp/${fileName}.mp3`)
+                                                    })
+                                    })
+                                    .catch(async () => {
+                                        await client.reply(from, 'kayanya ada error / musiknya kepanjangan hehe. coba lagi deh', id)
+                                        fs.unlinkSync(`./src/tmp/${fileName}.mp3`)
+                                    })
+                        }
+                        
+                    }).catch(async () => {
+                        await client.reply(from, 'kayanya ada error / musiknya kepanjangan hehe. coba lagi deh', id)
+                    })
+                } else {
+                    await axios.get(`https://api.be-team.me/ytmp3?search=${search}`, {
+                        headers: {
+                            'apiKey': apiKey
+                        }
+                    }).then(async (res) => {
+                        if(res.data.status){
+                            await client.reply(from, `Searching :  *"${res.data.result.title}"* \nTunggu bentar ya`, id)
+                            await exec(`wget -O src/tmp/${fileName}.mp3 ${res.data.result.url}`)
+                                    .then(async ()=> {
+                                        await client.sendPtt(from, `./src/tmp/${fileName}.mp3`, id)
+                                                    .then(() => {
+                                                        fs.unlinkSync(`./src/tmp/${fileName}.mp3`)
+                                                    })
+                                                    .catch(async () => {
+                                                        await client.reply(from, 'kayanya ada error / musiknya kepanjangan hehe. coba lagi deh', id)
+                                                        fs.unlinkSync(`./src/tmp/${fileName}.mp3`)
+                                                    })
+                                    })
+                                    .catch(async () => {
+                                        await client.reply(from, 'kayanya ada error / musiknya kepanjangan hehe. coba lagi deh', id)
+                                        fs.unlinkSync(`./src/tmp/${fileName}.mp3`)
+                                    })
+                        }
+                        
+                    }).catch(async () => {
+                        await client.reply(from, 'kayanya ada error / musiknya kepanjangan hehe. coba lagi deh', id)
+                    })
+                }
             break;
 
             case '#tulis' :
@@ -466,13 +504,13 @@ const msgHandler = async (client, message) => {
                 await client.sendTextWithMentions(from, `Siapp diterima, menghapus jabatan @${mentionedJidList[0].replace('@c.us', '')}.`)
             break;
 
-            case '#del' :
-                if (!isGroupAdmins) return await client.reply(from, 'ups cuma bisa admin grup xixixi', id)
-                if (!quotedMsg) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
-                if (!quotedMsgObj.fromMe) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
-                // console.log(quotedMsgObj);
-                await client.deleteMessage(quotedMsgObj.chatId, quotedMsgObj.id)
-            break;
+            // case '#del' :
+            //     if (!isGroupAdmins) return await client.reply(from, 'ups cuma bisa admin grup xixixi', id)
+            //     if (!quotedMsg) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
+            //     if (!quotedMsgObj.fromMe) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
+            //     // console.log(quotedMsgObj);
+            //     await client.deleteMessage(quotedMsgObj.chatId, quotedMsgObj.id)
+            // break;
 
             case '#bye':
                 if (!isGroupMsg) return await client.reply(from, 'mau ngapain make command ini ? ini bukan grup woi', id)
@@ -485,6 +523,7 @@ const msgHandler = async (client, message) => {
                 break;
         }
         
+        if(command.toLowerCase().includes(await client.getHostNumber())) return await client.reply(from, 'apa', id)
 
         
         
