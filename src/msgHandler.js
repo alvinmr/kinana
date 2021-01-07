@@ -523,7 +523,7 @@ const msgHandler = async (client, message) => {
                 break;
         }
         
-        if(command.toLowerCase().includes(await client.getHostNumber())) return await client.reply(from, 'apa', id)
+        if(commands.toLowerCase().includes(await client.getHostNumber())) return await client.reply(from, 'apa', id)
 
         
         
