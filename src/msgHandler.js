@@ -367,7 +367,12 @@ const msgHandler = async (client, message) => {
                 const media = twt.data.result.extended_entities.media[0]
                 if(!media) return await client.reply(from, 'sori kaka fitur ini lagi limit. biar ga sering limit, kuy donasi ke https://saweria.co/alvinmr', id)
                 if(media.type == 'video'){
-                    let linkVid = media.video_info.variants[0].url;
+                    let linkVid
+                    if (!media.video_info.variants[0].bitrate) {
+                        linkVid = media.video_info.variants[1].url;
+                    }else {
+                        linkVid = media.video_info.variants[0].url;
+                    }
                     await client.sendFileFromUrl(from, linkVid, 'twt.mp4', 'Nih vidnya', id)
                 }else{
                     let linkPhoto = media.media_url
