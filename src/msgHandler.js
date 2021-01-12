@@ -239,9 +239,8 @@ const msgHandler = async (client, message) => {
             break;
 
             case '#cari' :
-            case '#google' :
                 if (args.length === 1) return await client.reply(from, 'kirim perintah *#google*\ncontoh : #google babi', id)
-                const queryGoogle = body.slice(8)
+                const queryGoogle = body.slice(5)
                 axios.get(`https://api.be-line.me/googlesearch?search=${queryGoogle}&page=1`)
                     .then(async (res) => {
                         var result = 'Berikut hasil yang kudapetin di gugel\n\n';
@@ -287,7 +286,6 @@ const msgHandler = async (client, message) => {
             break;
 
             case '#delall':
-                if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
                 if (!isOwner) return await client.reply(from, 'yeeu lu sapa bukan yang buat bot ini enak aje', id)
                 const allChatDel = await client.getAllChatIds()
                 for (let ids of allChatDel){
@@ -365,7 +363,7 @@ const msgHandler = async (client, message) => {
                     }
                 })
                 const media = twt.data.result.extended_entities.media[0]
-                if(!media) return await client.reply(from, 'sori kaka fitur ini lagi limit. biar ga sering limit, kuy donasi ke https://saweria.co/alvinmr', id)
+                if(twt.data.status != 200) return await client.reply(from, 'sori kaka fitur ini lagi limit / ada eror. biar ga sering limit, kuy donasi ke https://saweria.co/alvinmr', id)
                 if(media.type == 'video'){
                     let linkVid
                     if (!media.video_info.variants[0].bitrate) {
