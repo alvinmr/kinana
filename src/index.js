@@ -9,10 +9,11 @@ noCache('./msgHandler', module => console.log(`'${module} updated!'`))
 const start = (client = new Client()) => {
     console.log('[BOT] SERVER STARTED');
 
+    client.setPresence(true);
     client.onStateChanged((state) => {
         console.log('CLIENT STATE', state);
-        if(state=== "CONFLICT" || state=== "UNLAUNCHED") client.forceRefocus();
-        if(state=== 'UNPAIRED') console.log('LOGGED OUT!!!!')
+        if(state=== "CONFLICT" || state=== "UNLAUNCHED") return client.forceRefocus();
+        if(state=== 'UNPAIRED') return  console.log('LOGGED OUT!!!!')
     })
 
     client.onMessage(async (message) => {

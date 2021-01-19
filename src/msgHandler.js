@@ -367,6 +367,9 @@ const msgHandler = async (client, message) => {
                 const media = twt.data.result.extended_entities.media[0]
                 if(!media) return await client.reply(from, 'sori kaka fitur ini lagi limit. biar ga sering limit, kuy donasi ke https://saweria.co/alvinmr', id)
                 if(media.type == 'video'){
+                    for(var i = 0; i < media.video_info.variants[0].length; i++){
+                        
+                    }
                     let linkVid = media.video_info.variants[0].url;
                     await client.sendFileFromUrl(from, linkVid, 'twt.mp4', 'Nih vidnya', id)
                 }else{
@@ -504,13 +507,13 @@ const msgHandler = async (client, message) => {
                 await client.sendTextWithMentions(from, `Siapp diterima, menghapus jabatan @${mentionedJidList[0].replace('@c.us', '')}.`)
             break;
 
-            // case '#del' :
-            //     if (!isGroupAdmins) return await client.reply(from, 'ups cuma bisa admin grup xixixi', id)
-            //     if (!quotedMsg) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
-            //     if (!quotedMsgObj.fromMe) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
-            //     // console.log(quotedMsgObj);
-            //     await client.deleteMessage(quotedMsgObj.chatId, quotedMsgObj.id)
-            // break;
+            case '#del' :
+                // if (!isGroupAdmins) return await client.reply(from, 'ups cuma bisa admin grup xixixi', id)
+                if (!quotedMsg) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
+                if (!quotedMsgObj.fromMe) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
+                // console.log(quotedMsgObj);
+                await client.deleteMessage(quotedMsgObj.chatId, quotedMsgObj.id, false)
+            break;
 
             case '#bye':
                 if (!isGroupMsg) return await client.reply(from, 'mau ngapain make command ini ? ini bukan grup woi', id)
