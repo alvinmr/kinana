@@ -18,7 +18,8 @@ Penggunaan: Kirim pesan dengan format *gifsticker https://media.giphy.com/media/
 Games : 
 
 *#fam* / *#family100* 
-Untuk bermain permainan seperti quiz family 100 dalam group. Cara pakai ikuti saja nanti yah
+Untuk bermain permainan quiz family 100 dalam group. Cara pakai ikuti saja nanti yah
+Penggunaan : #fam / #family100
 
 
 Lain-lain:
