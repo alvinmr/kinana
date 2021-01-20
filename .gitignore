@@ -1,5 +1,6 @@
 node_modules
-libs/tts
+libs/tts/*
+libs/family100.json
 .node-persist
 session.data.json
 .env
