@@ -526,7 +526,8 @@ const msgHandler = async (client, message) => {
             break;
 
             case '#fam':
-            case '#family100' :                                            
+            case '#family100' :  
+                if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)                                          
                 if(family.some(e => e.groupId === groupId)){
                     await client.sendText(from, 'Game family 100 sudah dimulai. ketik *#nyerah* untuk menghentikan permainan')
                 }else{
@@ -549,6 +550,7 @@ const msgHandler = async (client, message) => {
             break;
 
             case '#join':
+                if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
                 if(family.some(e => e.groupId === groupId)){
                     if(!family[index].userId.includes(sender.id)){
                         family[index].userId.push(sender.id)                        
@@ -571,6 +573,7 @@ const msgHandler = async (client, message) => {
             break;
 
             case '#start':
+                if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
                 if(family[index].start && !family[index].userId.includes(sender.id)) return await client.sendText(from, 'udah dimulai gamenya gan, tunggu nanti waktu selesai ya haha')                
                 if(family.some(e => e.groupId === groupId)){
                     if(family[index].userId.includes(sender.id)){
@@ -596,6 +599,7 @@ const msgHandler = async (client, message) => {
             break;
 
             case '#nyerah' : 
+            if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
                 if(family.some(e => e.groupId)){
                     if(family[index].userId.includes(sender.id)){
                         family.splice(index, 1)

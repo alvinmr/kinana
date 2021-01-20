@@ -15,6 +15,12 @@ Untuk merubah gif menjadi sticker (Giphy Only)
 Penggunaan: Kirim pesan dengan format *gifsticker https://media.giphy.com/media/JUvI2c1ddyzkwK4RlV/giphy.gif*
 
 
+Games : 
+
+*#fam* / *#family100* 
+Untuk bermain permainan seperti quiz family 100 dalam group. Cara pakai ikuti saja nanti yah
+
+
 Lain-lain:
 *#tr* _<kode bahasa>_
 Untuk mengartikan pesan menjadi bahasa yang ditentukan.
