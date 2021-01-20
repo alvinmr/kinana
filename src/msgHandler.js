@@ -56,9 +56,63 @@ const msgHandler = async (client, message) => {
         const isOwner = sender.id === ownerNumber
         const isBlocked = blockNumber.includes(sender.id) === true
         const uaOverride = 'WhatsApp/2.2029.4 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'                
+        const family = JSON.parse(require('fs').readFileSync('./libs/family100.json'))        
+        const index = family.findIndex(fam => fam.groupId === groupId)
         if (!isGroupMsg) console.log('\x1b[1;31m~\x1b[1;37m>', '[\x1b[1;32mMSG\x1b[1;37m]', time, color(msgs(command)), 'from', color(pushname))
         if (isGroupMsg) console.log('\x1b[1;31m~\x1b[1;37m>', '[\x1b[1;32mMSG\x1b[1;37m]', time, color(msgs(command)), 'from', color(pushname), 'in', color(name || formattedTitle))
         if (isBlocked) return
+        
+
+        if(index >= 0){
+            // Cek apakah sender sudah terdaftar di room family dan cek apakah game sudah dimulai
+            if(family[index].userId.includes(sender.id) && family[index].start){
+                // Cek apakah jawaban sama dengan yang dikirim user dan jawaban tidak ada di dalam list jawaban bener
+                if(family[index].jawaban[`${commands.toLowerCase()}`] && !family[index].jawaban[`${commands.toLowerCase()}`].userId){
+                    // Push jawaban bener                    
+                    family[index].jawaban[`${commands.toLowerCase()}`].userId = sender.id
+                    // Push score key idchat kalo belom ada
+                    if(typeof(family[index].score[sender.id]) == 'undefined'){                        
+                        Object.assign(family[index].score, {[sender.id] : 1})
+                    }else {
+                        // Nambahin score tiap jawaban bener
+                        family[index].score[sender.id] += 1
+                    }
+                    var dataString = JSON.stringify(family)
+                    require('fs').writeFileSync('./libs/family100.json', dataString)
+
+                    // Buat nampilin jawaban yang bener sesuai key dari jawaban
+                    var jawaban = family[index].soal
+                    jawaban += "\n\n"
+                    // Ngefilter jawaban yang ada di array jawaban sesuai dari array jawabanBener
+                    var i = 1;
+                    Object.keys(family[index].jawaban).forEach(key => {
+                        if(family[index].jawaban[key].userId){
+                            jawaban += `\n${i}. ${key} @${family[index].jawaban[key].userId.replace(/@c.us/g, '')}`
+                        }else{                                                    
+                            jawaban += `\n${i}. ${key.split(',').join(',').replace(/[a-zA-z0-9]/g, '_ ').replace(/\s/g, '  ')}`
+                        }                        
+                        i++
+                    })
+                    //Cek kalo udah bener semua bakal nampilin pemain poin paling banyak
+                    if(Object.values(family[index].jawaban).every(val => val.userId != false)){
+                        function getKeysWithHighestValue(o){
+                            var keys = Object.keys(o);
+                            keys.sort(function(a,b){
+                                return o[b] - o[a];
+                            })
+                            return keys
+                        }                        
+                        var menang = getKeysWithHighestValue(family[index].score)                         
+                        await client.sendTextWithMentions(from, `${jawaban}\n\nSelamat!! berhasil terjawab semua, pemenangnya adalah @${menang} dengan skor ${family[index].score[menang]}`)
+                        family.splice(index, 1)
+                        var dataString = JSON.stringify(family)
+                        require('fs').writeFileSync('./libs/family100.json', dataString)
+                    }else {
+                        await client.sendTextWithMentions(from, jawaban)
+                    }
+                }
+            }
+        }
 
         switch (command) {
             case '#tnc':
@@ -471,6 +525,89 @@ const msgHandler = async (client, message) => {
                 await client.sendImage(from, nulis.data.result, 'tulis.jpg', 'nih tulisannya gan', id)
             break;
 
+            case '#fam':
+            case '#family100' :                                            
+                if(family.some(e => e.groupId === groupId)){
+                    await client.sendText(from, 'Game family 100 sudah dimulai. ketik *#nyerah* untuk menghentikan permainan')
+                }else{
+                    var fam = await axios.get(`https://api.vhtear.com/family100&apikey=${process.env.API_KEY_VHTEAR}`)
+
+                    var dataJawaban = fam.data.result.jawaban.map(v => v.toLowerCase())
+                    var dataSoal = fam.data.result.soal
+                    family.push({
+                        "groupId" : groupId,
+                        "soal": dataSoal,
+                        "jawaban": dataJawaban.reduce((acc, curr) => (acc[curr] = {userId : ''}, acc), {}),
+                        "userId": [],
+                        "score" : {},
+                        "start" : false
+                    })
+                    var dataString = JSON.stringify(family)
+                    require('fs').writeFileSync('./libs/family100.json', dataString)
+                    await client.sendText(from, 'Game Family 100 akan dimulai, ketik *#join* untuk bergabung dalam game')
+                }
+            break;
+
+            case '#join':
+                if(family.some(e => e.groupId === groupId)){
+                    if(!family[index].userId.includes(sender.id)){
+                        family[index].userId.push(sender.id)                        
+                        var dataString = JSON.stringify(family)
+                        require('fs').writeFileSync('./libs/family100.json', dataString)
+                        var user = `Pemain Family 100\n`
+                        var userId
+                        for(var i = 0; i < family[index].userId.length; i++){
+                            userId = family[index].userId
+                            user += `\n${i+1}. @${userId[i].toString().replace(/@c.us/g, '')}`
+                        }
+                        user += `\nTunggu yang lain dulu yuk, terus ketik *#start* buat mulai yah`
+                        await client.sendTextWithMentions(from, user)
+                    }else{
+                        await client.sendText(from, 'kamu udah gabung hey')
+                    }
+                }else {
+                    await client.sendText(from, 'ketik *#family100* dulu dong')
+                }
+            break;
+
+            case '#start':
+                if(family[index].start && !family[index].userId.includes(sender.id)) return await client.sendText(from, 'udah dimulai gamenya gan, tunggu nanti waktu selesai ya haha')                
+                if(family.some(e => e.groupId === groupId)){
+                    if(family[index].userId.includes(sender.id)){
+                        if(family[index].userId.length){
+                            family[index].start = true
+                            var soal = family[index].soal
+                            soal += "\n\n"
+                            var i = 1;
+                            Object.keys(family[index].jawaban).forEach(key => {                                                  
+                                soal += `\n${i}. ${key.split(',').join(',').replace(/[a-zA-z0-9]/g, '_ ').replace(/\s/g, '  ')}`
+                                i++
+                            })                 
+                            await client.sendText(from, soal)
+                            var dataString = JSON.stringify(family)
+                            require('fs').writeFileSync('./libs/family100.json', dataString)
+                        }else{
+                            await client.sendText(from, 'kayaknya peserta dalam game belum ada nih. ketik *#join* buat gabung')
+                        }
+                    }
+                }else {
+                    await client.sendText(from, 'ketik *#family100* dulu dong')
+                }
+            break;
+
+            case '#nyerah' : 
+                if(family.some(e => e.groupId)){
+                    if(family[index].userId.includes(sender.id)){
+                        family.splice(index, 1)
+                        var dataString = JSON.stringify(family)
+                        require('fs').writeFileSync('./libs/family100.json', dataString)
+                        await client.sendText(from, 'yaah cupu. okehla permainan selesai \n\nJangan lupa donasi ke https://saweria.co/alvinmr kasihani saya gan perlu makan :(')
+                    }
+                }else {
+                    await client.sendText(from, 'mau nyerah apaan, belom mulai')
+                }
+            break;
+
             // Fitur group
             case '#kick':
                 if (!isGroupMsg) return await client.reply(from, 'mau ngapain make command ini ? ini bukan grup woi', id)
@@ -526,6 +663,8 @@ const msgHandler = async (client, message) => {
                 break;
         }
         
+        
+
         if(commands.toLowerCase().includes(await client.getHostNumber())) return await client.reply(from, 'apa', id)
 
         
