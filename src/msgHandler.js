@@ -67,7 +67,7 @@ const msgHandler = async (client, message) => {
             // Cek apakah sender sudah terdaftar di room family dan cek apakah game sudah dimulai
             if(family[index].userId.includes(sender.id) && family[index].start){
                 // Cek apakah jawaban sama dengan yang dikirim user dan jawaban tidak ada di dalam list jawaban bener
-                if(family[index].jawaban[`${commands.toLowerCase()}`] && !family[index].jawaban[`${commands.toLowerCase()}`].userId){
+                if(Object.keys(family[index].jawaban).includes(commands.toLowerCase()) && !family[index].jawaban[`${commands.toLowerCase()}`].userId){
                     // Push jawaban bener                    
                     family[index].jawaban[`${commands.toLowerCase()}`].userId = sender.id
                     // Push score key idchat kalo belom ada
@@ -100,10 +100,12 @@ const msgHandler = async (client, message) => {
                             keys.sort(function(a,b){
                                 return o[b] - o[a];
                             })
-                            return keys
+                            console.log(keys);
+                            return keys.splice(0, 1)
                         }                        
-                        var menang = getKeysWithHighestValue(family[index].score)                         
-                        await client.sendTextWithMentions(from, `${jawaban}\n\nSelamat!! berhasil terjawab semua, pemenangnya adalah @${menang} dengan skor ${family[index].score[menang]}`)
+                        var menang = getKeysWithHighestValue(family[index].score) 
+                        console.log(menang);
+                        await client.sendTextWithMentions(from, `${jawaban}\n\nSelamat!! berhasil terjawab semua, pemenangnya adalah @${menang.toString().replace(/@c.us/g, '')} dengan berhasil menjawab ${family[index].score[menang]}`)
                         family.splice(index, 1)
                         var dataString = JSON.stringify(family)
                         require('fs').writeFileSync('./libs/family100.json', dataString)
@@ -519,7 +521,7 @@ const msgHandler = async (client, message) => {
             case '#tulis' :
             case '#nulis' : 
                 const tulisan = body.slice(7)
-                // if (args.length === 1) return await client.reply(from, 'kirim perintah *#nulis*\ncontoh : #nulis apa aja', id)
+                if (args.length === 1) return await client.reply(from, 'kirim perintah *#nulis*\ncontoh : #nulis apa aja', id)
                 const nulis = await axios.get(`https://st4rz.herokuapp.com/api/nulis?text=${tulisan}`)
                 if(nulis.data.status != 200) return await client.reply(from, 'sori kaka fitur ini lagi limit. biar ga sering limit, kuy donasi ke https://saweria.co/alvinmr', id)
                 await client.sendImage(from, nulis.data.result, 'tulis.jpg', 'nih tulisannya gan', id)
@@ -533,7 +535,8 @@ const msgHandler = async (client, message) => {
                 }else{
                     var fam = await axios.get(`https://api.vhtear.com/family100&apikey=${process.env.API_KEY_VHTEAR}`)
 
-                    var dataJawaban = fam.data.result.jawaban.map(v => v.toLowerCase())
+                    var dataJawaban = fam.data.result.jawaban.join('/').split("/").map(v => v.toLowerCase().trim()).slice(1)
+                    console.log(dataJawaban);
                     var dataSoal = fam.data.result.soal
                     family.push({
                         "groupId" : groupId,
@@ -551,7 +554,8 @@ const msgHandler = async (client, message) => {
 
             case '#join':
                 if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
-                if(family.some(e => e.groupId === groupId)){
+                if(family[index].start) return await client.reply(from, 'Sori yah kamu gabisa join soalnya lagi main xixi', id)
+                if(family.some(e => e.groupId === groupId )){
                     if(!family[index].userId.includes(sender.id)){
                         family[index].userId.push(sender.id)                        
                         var dataString = JSON.stringify(family)
@@ -598,16 +602,43 @@ const msgHandler = async (client, message) => {
                 }
             break;
 
+            case '#ganti' :
+                // Nanti dah kayanya keren
+            break;
+
             case '#nyerah' : 
-            if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
-                if(family.some(e => e.groupId)){
-                    if(family[index].userId.includes(sender.id)){
+                if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
+                if (!family[index].userId.includes(sender.id)) return await client.sendText(from, 'Sape elu main nyerah aja ga ikot maen')
+                if(family.some(e => e.groupId && family[index].start)){
+                    if(family[index].userId.includes(sender.id)){                        
+                        // Random ngisi jawaban yang kosong
+                        var randomProperty = function (obj) {
+                            var keys = Object.keys(obj);
+                            return obj[keys[ keys.length * Math.random() << 0]];
+                        };                        
+                        var randomJawaban = randomProperty(Object.values(family[index].jawaban).filter(val => !val.userId))
+                        randomJawaban.userId = "6283114427102@c.us *(ADMIN)*"
+
+                        // Write soal + jawaban kembali
+                        var nyerah = family[index].soal
+                        nyerah += "\n\n"
+                        var i = 1;
+                        Object.keys(family[index].jawaban).forEach(key => {
+                            if(family[index].jawaban[key].userId){
+                                nyerah += `\n${i}. ${key} @${family[index].jawaban[key].userId.replace(/@c.us/g, '')}`
+                            }else{                                                    
+                                nyerah += `\n${i}. ${key.split(',').join(',').replace(/[a-zA-z0-9]/g, '_ ').replace(/\s/g, '  ')}`
+                            }                        
+                            i++
+                        })
+                        nyerah += `\n\nPermainan selesai, makasih uda make bot ini. kuy donasi bantu yang aku untuk beli laptop baru #HelpBotBeliLaptop di https://saweria.co/alvinmr`
+                        await client.sendTextWithMentions(from, nyerah)
                         family.splice(index, 1)
                         var dataString = JSON.stringify(family)
-                        require('fs').writeFileSync('./libs/family100.json', dataString)
-                        await client.sendText(from, 'yaah cupu. okehla permainan selesai \n\nJangan lupa donasi ke https://saweria.co/alvinmr kasihani saya gan perlu makan :(')
+                        require('fs').writeFileSync('./libs/family100.json', dataString)                        
                     }
-                }else {
+                }else {                    
+                    // console.log();
                     await client.sendText(from, 'mau nyerah apaan, belom mulai')
                 }
             break;
