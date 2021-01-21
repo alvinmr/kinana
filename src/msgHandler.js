@@ -594,7 +594,7 @@ const msgHandler = async (client, message) => {
                                 }                        
                                 i++
                             })             
-                            await client.sendText(from, soal)
+                            await client.sendTextWithMentions(from, soal)
                             var dataString = JSON.stringify(family)
                             require('fs').writeFileSync('./libs/family100.json', dataString)
                         }else{
