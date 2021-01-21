@@ -583,7 +583,7 @@ const msgHandler = async (client, message) => {
                     if(family[index].userId.includes(sender.id)){
                         if(family[index].userId.length){
                             family[index].start = true
-                            var soal = family[index].soal
+                            soal = family[index].soal
                             soal += "\n\n"
                             var i = 1;
                             Object.keys(family[index].jawaban).forEach(key => {
