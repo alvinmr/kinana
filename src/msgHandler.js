@@ -579,7 +579,7 @@ const msgHandler = async (client, message) => {
             case '#start':
                 if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
                 if(family[index].start && !family[index].userId.includes(sender.id)) return await client.sendText(from, 'udah dimulai gamenya gan, tunggu nanti waktu selesai ya haha')                
-                if(family.some(e => e.groupId)){
+                if(family.some(e => e.groupId === groupId)){
                     if(family[index].userId.includes(sender.id)){
                         if(family[index].userId.length){
                             family[index].start = true
@@ -613,7 +613,7 @@ const msgHandler = async (client, message) => {
             case '#nyerah' : 
                 if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
                 if (!family[index].userId.includes(sender.id)) return await client.sendText(from, 'Sape elu main nyerah aja ga ikot maen')
-                if(family.some(e => e.groupId && family[index].start)){
+                if(family.some(e => e.groupId === groupId && family[index].start)){
                     if(family[index].userId.includes(sender.id)){                        
                         // Random ngisi jawaban yang kosong
                         var randomProperty = function (obj) {
