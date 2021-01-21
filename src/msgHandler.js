@@ -579,7 +579,7 @@ const msgHandler = async (client, message) => {
             case '#start':
                 if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
                 if(family[index].start && !family[index].userId.includes(sender.id)) return await client.sendText(from, 'udah dimulai gamenya gan, tunggu nanti waktu selesai ya haha')                
-                if(family[index].start){
+                if(family.some(e => e.groupId)){
                     if(family[index].userId.includes(sender.id)){
                         if(family[index].userId.length){
                             family[index].start = true
