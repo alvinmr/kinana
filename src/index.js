@@ -20,7 +20,7 @@ const start = (client = new Client()) => {
         client.getAmountOfLoadedMessages()
             .then((msg) => {
                 if(msg >= 3000) {
-                    console.log('[CLIENT]', color(`Loaded Message Reach ${msg}, cuting message cache...`, 'yellow'));
+                    console.log('[CLIENT]', `Loaded Message Reach ${msg}, cuting message cache...`);
                     client.cutMsgCache()
                 }
             })
