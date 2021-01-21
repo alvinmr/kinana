@@ -554,7 +554,7 @@ const msgHandler = async (client, message) => {
 
             case '#join':
                 if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
-                if(family[index].start && !family[index].userId.includes(sender.id)) return await client.reply(from, 'Sori yah kamu gabisa join soalnya lagi main xixi', id)
+                if(family[index].start) return await client.reply(from, 'Sori yah kamu gabisa join soalnya lagi main xixi', id)
                 if(family.some(e => e.groupId === groupId )){
                     if(!family[index].userId.includes(sender.id)){
                         family[index].userId.push(sender.id)                        
@@ -572,29 +572,25 @@ const msgHandler = async (client, message) => {
                         await client.sendText(from, 'kamu udah gabung hey')
                     }
                 }else {
-                    await client.sendText(from, 'ketik *#fam* dulu dong')
+                    await client.sendText(from, 'ketik *#family100* dulu dong')
                 }
             break;
 
             case '#start':
                 if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
                 if(family[index].start && !family[index].userId.includes(sender.id)) return await client.sendText(from, 'udah dimulai gamenya gan, tunggu nanti waktu selesai ya haha')                
-                if(family.some(e => e.groupId === groupId)){
+                if(!family[index].start){
                     if(family[index].userId.includes(sender.id)){
                         if(family[index].userId.length){
                             family[index].start = true
-                            soal = family[index].soal
+                            var soal = family[index].soal
                             soal += "\n\n"
                             var i = 1;
-                            Object.keys(family[index].jawaban).forEach(key => {
-                                if(family[index].jawaban[key].userId){
-                                    soal += `\n${i}. ${key} @${family[index].jawaban[key].userId.replace(/@c.us/g, '')}`
-                                }else{                                                    
-                                    soal += `\n${i}. ${key.split(',').join(',').replace(/[a-zA-z0-9]/g, '_ ').replace(/\s/g, '  ')}`
-                                }                        
+                            Object.keys(family[index].jawaban).forEach(key => {                                                  
+                                soal += `\n${i}. ${key.split(',').join(',').replace(/[a-zA-z0-9]/g, '_ ').replace(/\s/g, '  ')}`
                                 i++
-                            })             
-                            await client.sendTextWithMentions(from, soal)
+                            })                 
+                            await client.sendText(from, soal)
                             var dataString = JSON.stringify(family)
                             require('fs').writeFileSync('./libs/family100.json', dataString)
                         }else{
@@ -602,7 +598,7 @@ const msgHandler = async (client, message) => {
                         }
                     }
                 }else {
-                    await client.sendText(from, 'ketik *#fam* dulu dong')
+                    await client.sendText(from, 'Udah dimulai njer')
                 }
             break;
 
@@ -613,7 +609,7 @@ const msgHandler = async (client, message) => {
             case '#nyerah' : 
                 if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
                 if (!family[index].userId.includes(sender.id)) return await client.sendText(from, 'Sape elu main nyerah aja ga ikot maen')
-                if(family.some(e => e.groupId === groupId && family[index].start)){
+                if(family.some(e => e.groupId && family[index].start)){
                     if(family[index].userId.includes(sender.id)){                        
                         // Random ngisi jawaban yang kosong
                         var randomProperty = function (obj) {
