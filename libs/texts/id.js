@@ -15,11 +15,15 @@ Untuk merubah gif menjadi sticker (Giphy Only)
 Penggunaan: Kirim pesan dengan format *gifsticker https://media.giphy.com/media/JUvI2c1ddyzkwK4RlV/giphy.gif*
 
 
-Games : 
+Games Family 100 : 
 
 *#fam* / *#family100* 
-Untuk bermain permainan quiz family 100 dalam group. Cara pakai ikuti saja nanti yah
-Penggunaan : #fam / #family100
+Untuk bermain permainan quiz family 100 dalam group. Ga ada aturan khusus untuk jawab (kaya make # lah ato apa), so jawab aja kalo uda muncul soal
+Penggunaan : 
+- *#fam* untuk membuat room family 100
+- *#join* untuk bergabung dalam room family 100.
+- *#start* untuk memulai game
+- *#nyerah* untuk menyerah :(
 
 
 Lain-lain:
