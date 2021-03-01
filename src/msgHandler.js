@@ -3,9 +3,6 @@ const {
     processTime,
     isUrl
 } = require('../utils/index.js')
-const {
-    trans
-} = require("../utils/translate.js")
 const moment = require('moment-timezone')
 const {
     decryptMedia
