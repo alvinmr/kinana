@@ -31,7 +31,7 @@ const start = (client = new Client()) => {
     })
 
     client.onAddedToGroup(async (chat) => {
-        client.sendText(from, 'maap untuk sekarang gabisa dimasukin ke grup karna sudah banyak, coba hubungi pembuat bot ini biar bisa ditambahin heuheu ( ⇀‸↼‶ )').then(() => client.leaveGroup(chat.groupMetadata.id))
+        client.sendText(chat.groupMetadata.id, 'maap untuk sekarang gabisa dimasukin ke grup karna sudah banyak, coba hubungi pembuat bot ini biar bisa ditambahin heuheu ( ⇀‸↼‶ )').then(() => client.leaveGroup(chat.groupMetadata.id))
         // let totMem = await chat.groupMetadata.participants.length
         // if (totMem >= 1) client.sendText(chat.groupMetadata.id, `Halo rakyat grup ${chat.contact.name} terimakasih sudah menginvite bot ini, untuk melihat menu silahkan kirim *#menu*`)
     })

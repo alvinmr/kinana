@@ -182,7 +182,6 @@ const msgHandler = async (client, message) => {
             case '#sticker':
             case '#stiker':
                 if (isMedia && type === 'image' || type === 'video') {
-                    console.log(message);
                     const mediaData = await decryptMedia(message, uaOverride)
                     const imageBase64 = `data:${mimetype};base64,${mediaData.toString('base64')}`
                     if (type === 'image') return await client.sendImageAsSticker(from, imageBase64, {
@@ -249,13 +248,20 @@ const msgHandler = async (client, message) => {
 
             case '#apa':
             case '#apakah':
-                const apakah = require('node-gtts')('id')
+                var googleTTS = require('google-tts-api');
                 const answer = ['iya', 'tidak', 'mungkin']
-                if (args.length === 1) return await client.reply(from, 'apakah apa babi, yang jelas napa', id)
                 let randomAnsw = Math.floor(Math.random() * answer.length)
-                apakah.save('./libs/tts/resID.mp3', answer[randomAnsw], () => {
-                    client.sendPtt(from, './libs/tts/resID.mp3', id)
-                })
+                if (args.length === 1) return await client.reply(from, 'apakah apa babi, yang jelas napa', id)
+                try {
+                    googleTTS.getAudioBase64(answer[randomAnsw], {
+                        lang: 'id',
+                        slow: false,
+                        host: 'https://translate.google.com',
+                        timeout: 10000
+                    }).then((res) => client.sendPtt(from, `data:audio/mp4;base64,${res}`, id))
+                } catch (error) {
+                    await client.reply(from, 'sepertinya ada yang salah, list data kode bahasa https://cloud.google.com/speech-to-text/docs/languages', id)
+                }
                 break;
 
             case '#berapakah':
@@ -339,34 +345,21 @@ const msgHandler = async (client, message) => {
                 break;
 
             case '#say':
-                if (args.length === 1) return await client.reply(from, 'Kirim perintah *#say* [id, en, jp, ar] [teks],\ncontoh *#say* id halo anak babi', id)
-                const ttsId = require('node-gtts')('id')
-                const ttsEn = require('node-gtts')('en')
-                const ttsJp = require('node-gtts')('ja')
-                const ttsAr = require('node-gtts')('ar')
-                const dataText = body.slice(8)
-                if (dataText === '') return await client.reply(from, 'bodoh kh?', id)
-                if (dataText >= 250) return await client.reply(from, 'jangan kebanyakan babi', id)
-                let dataBahasa = body.slice(5, 7)
-                if (dataBahasa == 'id') {
-                    ttsId.save('./libs/tts/resID.mp3', dataText, () => {
-                        client.sendPtt(from, './libs/tts/resID.mp3', id)
-                    })
-                } else if (dataBahasa == 'en') {
-                    ttsEn.save('./libs/tts/resEN.mp3', dataText, () => {
-                        client.sendPtt(from, './libs/tts/resEN.mp3', id)
-                    })
-                } else if (dataBahasa == 'jp') {
-                    ttsJp.save('./libs/tts/resJP.mp3', dataText, () => {
-                        client.sendPtt(from, './libs/tts/resJP.mp3', id)
-                    })
-                } else if (dataBahasa == 'ar') {
-                    ttsAr.save('./libs/tts/resAR.mp3', dataText, () => {
-                        client.sendPtt(from, './libs/tts/resAR.mp3', id)
-                    })
-                } else {
-                    await client.reply(from, 'Masukkan data bahasa : [id] untuk indonesia, [en] untuk inggris, [jp] untuk jepang, dan [ar] untuk arab', id)
+                var googleTTS = require('google-tts-api');
+                const dataTextUcap = body.slice(9)
+                if (args.length === 1) return await client.reply(from, 'Kirim perintah *#say* [kode bahasa] [teks],\ncontoh *#say* id halo anak babi', id)
+                if (dataTextUcap.length >= 200) return await client.reply(from, 'jangan kebanyakan babi', id)
+                try {
+                    googleTTS.getAudioBase64(dataTextUcap, {
+                        lang: args[1],
+                        slow: false,
+                        host: 'https://translate.google.com',
+                        timeout: 10000
+                    }).then((res) => client.sendPtt(from, `data:audio/mp4;base64,${res}`, id))
+                } catch (error) {
+                    await client.reply(from, 'sepertinya ada yang salah, list data kode bahasa https://cloud.google.com/speech-to-text/docs/languages', id)
                 }
+
                 break;
 
             case '#delall':
@@ -461,8 +454,9 @@ const msgHandler = async (client, message) => {
                     var reqApi = await axios.get(`https://lolhuman.herokuapp.com/api/ytaudio?apikey=${process.env.API_KEY}&url=${search}`)
                     try {
                         client.reply(from, `Searching :  *"${reqApi.data.result.title}"* \nTunggu bentar ya`, id)
-                        var fileBase = await client.downloadFileWithCredentials(reqApi.data.result.audio.link[3].link)
-                        await client.sendPtt(from, `data:${mimetype};base64,${fileBase.toString('base64')}`, id)
+                        await axios.get(reqApi.data.result.audio.link[3].link, {
+                            responseType: 'arraybuffer'
+                        }).then(res => client.sendPtt(from, `data:audio/mp4;base64,${Buffer.from(res.data, 'binary').toString('base64')}`, id))
                     } catch (error) {
                         await client.reply(from, 'ada yang salah nih, hubungi admin sana', id)
                         console.log(error);
@@ -471,8 +465,9 @@ const msgHandler = async (client, message) => {
                     var reqApi = await axios.get(`https://lolhuman.herokuapp.com/api/ytplay?apikey=${process.env.API_KEY}&query=${search}`)
                     try {
                         client.reply(from, `Searching :  *"${reqApi.data.result.info.title}"* \nTunggu bentar ya`, id)
-                        var fileBase = await client.download(reqApi.data.result.audio[4].link)
-                        await client.sendPtt(from, fileBase, id)
+                        await axios.get(reqApi.data.result.audio[4].link, {
+                            responseType: 'arraybuffer'
+                        }).then(res => client.sendPtt(from, `data:audio/mp4;base64,${Buffer.from(res.data, 'binary').toString('base64')}`, id))
                     } catch (error) {
                         await client.reply(from, 'ada yang salah nih, hubungi admin sana', id)
                         console.log(error);
