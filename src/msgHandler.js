@@ -460,6 +460,7 @@ const msgHandler = async (client, message) => {
                     }
                 } else {
                     var reqApi = await axios.get(`https://lolhuman.herokuapp.com/api/ytplay?apikey=${process.env.API_KEY}&query=${search}`)
+                    if (reqApi.data.result.info.duration >= '00:06:00') return await client.reply(from, 'musiknya kepanjangan, coba yang lain ya', id)
                     try {
                         client.reply(from, `Searching :  *"${reqApi.data.result.info.title}"* \nTunggu bentar ya`, id)
                         await axios.get(reqApi.data.result.audio[4].link, {
