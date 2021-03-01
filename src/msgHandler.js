@@ -293,9 +293,14 @@ const msgHandler = async (client, message) => {
                 if (args[2] !== '|') return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
                 const nama1 = args[1]
                 const nama2 = args[3]
-                axios.get(`https://api.be-line.me/primbon/kecocokan?nama1=${nama1}&nama2=${nama2}`)
+                axios.get(`https://lolhuman.herokuapp.com/api/jodoh/${nama1}/${nama2}?apikey=${process.env.API_KEY}`)
                     .then(async (res) => {
-                        await client.reply(from, res.data.result, id)
+                        var hasilJodoh = `Hasilnya adalah :
+                        Positif : ${res.data.result.positif}
+                        Negatif : ${res.data.result.negatif}
+                        
+                        Deskripsi : ${res.data.result.deskripsi}`
+                        await client.reply(from, hasilJodoh, id)
                     })
                     .catch(async () => {
                         await client.reply(from, 'kayanya ada yang salah deh', id)
@@ -410,23 +415,16 @@ const msgHandler = async (client, message) => {
                 break;
 
             case '#1cak':
-                const wancak = await axios.get('https://api.be-team.me/1cak', {
-                    headers: {
-                        'apiKey': apiKey
-                    }
-                })
-                if (!wancak.data.result) return await client.reply(from, 'sori kaka fitur ini lagi limit. biar ga sering limit, kuy donasi ke https://saweria.co/alvinmr', id)
-                await client.sendImage(from, wancak.data.result.src, 'meme.jpg', wancak.data.result.title, id)
+                await client.sendImage(from, `https://lolhuman.herokuapp.com/api/onecak?apikey=${process.env.API_KEY}`, 'meme.jpg', '', id)
+                    .catch(async (err) => {
+                        await client.reply(from, 'Kayanya ada yang salah, coba hubungi admin', id)
+                    })
                 break;
 
             case '#bot':
                 const text = body.slice(5)
                 if (args.length === 1) return await client.reply(from, 'kirim perintah *#bot*\ncontoh : #bot maen yu', id)
-                const simi = await axios.get(`https://api.be-team.me/simisimi?text=${text}&lang=id`, {
-                    headers: {
-                        'apiKey': apiKey
-                    }
-                })
+                const simi = await axios.get(`https://lolhuman.herokuapp.com/api/simi?apikey=${process.env.API_KEY}&text=${text}`)
                 if (simi.data.status != 200) return await client.reply(from, 'sori kaka fitur ini lagi limit. biar ga sering limit, kuy donasi ke https://saweria.co/alvinmr', id)
                 await client.reply(from, simi.data.result, id)
                 break;
@@ -437,22 +435,13 @@ const msgHandler = async (client, message) => {
                 const linkTwt = args[1]
                 const isValidLink = linkTwt.match(new RegExp(/http(?:s)?:\/\/(?:www\.)?twitter\.com\/([a-zA-Z0-9_]+)/))
                 if (!isValidLink) return await client.reply(from, 'hayo bukan link post twitter nih hehehew. coba lagi', id)
-                const twt = await axios.get(`https://api.be-team.me/twitter?url=${linkTwt}`, {
-                    headers: {
-                        'apiKey': apiKey
-                    }
-                })
-                const media = twt.data.result.extended_entities.media[0]
+                const twt = await axios.get(`https://lolhuman.herokuapp.com/api/twitter?apikey=${process.env.API_KEY}&url=${linkTwt}`)
+                const media = twt.data.result[0]
                 if (!media) return await client.reply(from, 'sori kaka fitur ini lagi limit. biar ga sering limit, kuy donasi ke https://saweria.co/alvinmr', id)
-                if (media.type == 'video') {
-                    for (var i = 0; i < media.video_info.variants[0].length; i++) {
-
-                    }
-                    let linkVid = media.video_info.variants[0].url;
-                    await client.sendFileFromUrl(from, linkVid, 'twt.mp4', 'Nih vidnya', id)
+                if (media.type == 'mp4') {
+                    await client.sendFileFromUrl(from, media.link, 'twt.mp4', 'Nih vidnya', id)
                 } else {
-                    let linkPhoto = media.media_url
-                    await client.sendImage(from, linkPhoto, 'twt.jpg', 'Nih photonya', id)
+                    await client.reply(from, 'Maap nich cuma bisa download video hehe')
                 }
                 break;
 
@@ -461,84 +450,37 @@ const msgHandler = async (client, message) => {
                 const linkIg = args[1]
                 const isValidLinkIg = linkIg.match(new RegExp(/(https?:\/\/(?:www\.)?instagram\.com\/p\/([^/?#&]+)).*/g))
                 if (!isValidLinkIg) return await client.reply(from, 'hayo bukan link post Instagram nih hehehew. coba lagi', id)
-                const ig = await axios.get(`https://api.be-team.me/instapost?url=${linkIg}`, {
-                    headers: {
-                        'apiKey': apiKey
-                    }
-                })
+                const ig = await axios.get(`https://lolhuman.herokuapp.com/api/instagram?apikey=${process.env.API_KEY}&url=${linkIg}`)
                 if (ig.data.status != 200) return await client.reply(from, 'sori kaka fitur ini lagi limit. biar ga sering limit, kuy donasi ke https://saweria.co/alvinmr', id)
-                for (var i = 0; i < ig.data.result.media.length; i++) {
-                    if (ig.data.result.media[i].is_video) {
-                        await client.sendFileFromUrl(from, ig.data.result.media[i].video, 'ig.mp4', 'Nih vidnya', id)
-                    } else {
-                        await client.sendImage(from, ig.data.result.media[i].img, 'ig.jpg', 'Nih photonya', id)
-                    }
-                }
+                await client.sendImage(from, ig.data.result, 'ig.jpg', 'Nih photonya', id)
                 break;
 
             case '#play':
-                var crypto = require("crypto")
-                const fs = require('fs')
-                var fileName = crypto.randomBytes(20).toString('hex')
                 const search = body.slice(6)
                 if (search.match(new RegExp(/(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/?.*(?:watch|embed)?(?:.*v=|v\/|\/)([\w-_]+)/gmi))) {
-                    await axios.get(`https://api.be-team.me/ytmp3?url=${search}`, {
-                        headers: {
-                            'apiKey': apiKey
-                        }
-                    }).then(async (res) => {
-                        if (res.data.status) {
-                            await client.reply(from, `Searching :  *"${res.data.result.title}"* \nTunggu bentar ya`, id)
-                            await exec(`wget -O src/tmp/${fileName}.mp3 ${res.data.result.url}`)
-                                .then(async () => {
-                                    await client.sendPtt(from, `./src/tmp/${fileName}.mp3`, id)
-                                        .then(() => {
-                                            fs.unlinkSync(`./src/tmp/${fileName}.mp3`)
-                                        })
-                                        .catch(async () => {
-                                            await client.reply(from, 'kayanya ada error / musiknya kepanjangan hehe. coba lagi deh', id)
-                                            fs.unlinkSync(`./src/tmp/${fileName}.mp3`)
-                                        })
-                                })
-                                .catch(async () => {
-                                    await client.reply(from, 'kayanya ada error / musiknya kepanjangan hehe. coba lagi deh', id)
-                                    fs.unlinkSync(`./src/tmp/${fileName}.mp3`)
-                                })
-                        }
-
-                    }).catch(async () => {
-                        await client.reply(from, 'kayanya ada error / musiknya kepanjangan hehe. coba lagi deh', id)
-                    })
+                    var reqApi = await axios.get(`https://lolhuman.herokuapp.com/api/ytaudio?apikey=${process.env.API_KEY}&url=${search}`)
+                    try {
+                        client.reply(from, `Searching :  *"${reqApi.data.result.title}"* \nTunggu bentar ya`, id)
+                        var fileBase = await client.downloadFileWithCredentials(reqApi.data.result.audio.link[3].link)
+                        await client.sendPtt(from, `data:${mimetype};base64,${fileBase.toString('base64')}`, id)
+                    } catch (error) {
+                        await client.reply(from, 'ada yang salah nih, hubungi admin sana', id)
+                        console.log(error);
+                    }
                 } else {
-                    await axios.get(`https://api.be-team.me/ytmp3?search=${search}`, {
-                        headers: {
-                            'apiKey': apiKey
-                        }
-                    }).then(async (res) => {
-                        if (res.data.status) {
-                            await client.reply(from, `Searching :  *"${res.data.result.title}"* \nTunggu bentar ya`, id)
-                            await exec(`wget -O src/tmp/${fileName}.mp3 ${res.data.result.url}`)
-                                .then(async () => {
-                                    await client.sendPtt(from, `./src/tmp/${fileName}.mp3`, id)
-                                        .then(() => {
-                                            fs.unlinkSync(`./src/tmp/${fileName}.mp3`)
-                                        })
-                                        .catch(async () => {
-                                            await client.reply(from, 'kayanya ada error / musiknya kepanjangan hehe. coba lagi deh', id)
-                                            fs.unlinkSync(`./src/tmp/${fileName}.mp3`)
-                                        })
-                                })
-                                .catch(async () => {
-                                    await client.reply(from, 'kayanya ada error / musiknya kepanjangan hehe. coba lagi deh', id)
-                                    fs.unlinkSync(`./src/tmp/${fileName}.mp3`)
-                                })
-                        }
-
-                    }).catch(async () => {
-                        await client.reply(from, 'kayanya ada error / musiknya kepanjangan hehe. coba lagi deh', id)
-                    })
+                    var reqApi = await axios.get(`https://lolhuman.herokuapp.com/api/ytplay?apikey=${process.env.API_KEY}&query=${search}`)
+                    try {
+                        client.reply(from, `Searching :  *"${reqApi.data.result.info.title}"* \nTunggu bentar ya`, id)
+                        var fileBase = await client.download(reqApi.data.result.audio[4].link)
+                        await client.sendPtt(from, fileBase, id)
+                    } catch (error) {
+                        await client.reply(from, 'ada yang salah nih, hubungi admin sana', id)
+                        console.log(error);
+                    }
                 }
+
                 break;
+
 
             case '#tulis':
             case '#nulis':
@@ -555,11 +497,11 @@ const msgHandler = async (client, message) => {
                 if (family.some(e => e.groupId === groupId)) {
                     await client.sendText(from, 'Game family 100 sudah dimulai. ketik *#nyerah* untuk menghentikan permainan')
                 } else {
-                    var fam = await axios.get(`https://api.vhtear.com/family100&apikey=${process.env.API_KEY_VHTEAR}`)
+                    var fam = await axios.get(`https://lolhuman.herokuapp.com/api/tebak/family100?apikey=${process.env.API_KEY}`)
 
-                    var dataJawaban = fam.data.result.jawaban.join('/').split("/").map(v => v.toLowerCase().trim()).slice(1)
+                    var dataJawaban = Object.values(fam.data.result.aswer).map(value => value.toLowerCase())
                     console.log(dataJawaban);
-                    var dataSoal = fam.data.result.soal
+                    var dataSoal = fam.data.result.question
                     family.push({
                         "groupId": groupId,
                         "soal": dataSoal,
@@ -707,7 +649,7 @@ const msgHandler = async (client, message) => {
                 // if (!isGroupAdmins) return await client.reply(from, 'ups cuma bisa admin grup xixixi', id)
                 if (!quotedMsg) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
                 if (!quotedMsgObj.fromMe) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
-                // console.log(quotedMsgObj);
+                console.log(quotedMsgObj);
                 await client.deleteMessage(quotedMsgObj.chatId, quotedMsgObj.id, false)
                 break;
 

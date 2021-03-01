@@ -4,4 +4,5 @@ libs/family100.json
 .node-persist
 session.data.json
 .env
+logs/*
 src/tmp

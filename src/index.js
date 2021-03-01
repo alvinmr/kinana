@@ -1,4 +1,7 @@
-const {Client, create} = require('@open-wa/wa-automate')
+const {
+    Client,
+    create
+} = require('@open-wa/wa-automate')
 const options = require('../utils/option')
 const color = require('../utils/index')
 const fs = require('fs')
@@ -12,14 +15,14 @@ const start = (client = new Client()) => {
     client.setPresence(true);
     client.onStateChanged((state) => {
         console.log('CLIENT STATE', state);
-        if(state=== "CONFLICT" || state=== "UNLAUNCHED") return client.forceRefocus();
-        if(state=== 'UNPAIRED') return  console.log('LOGGED OUT!!!!')
+        if (state === "CONFLICT" || state === "UNLAUNCHED") return client.forceRefocus();
+        if (state === 'UNPAIRED') return console.log('LOGGED OUT!!!!')
     })
 
     client.onMessage(async (message) => {
         client.getAmountOfLoadedMessages()
             .then((msg) => {
-                if(msg >= 3000) {
+                if (msg >= 3000) {
                     console.log('[CLIENT]', `Loaded Message Reach ${msg}, cuting message cache...`);
                     client.cutMsgCache()
                 }
@@ -28,22 +31,23 @@ const start = (client = new Client()) => {
     })
 
     client.onAddedToGroup(async (chat) => {
-        let totMem = await chat.groupMetadata.participants.length
-        if (totMem >= 1) client.sendText(chat.groupMetadata.id, `Halo rakyat grup ${chat.contact.name} terimakasih sudah menginvite bot ini, untuk melihat menu silahkan kirim *#menu*`)
+        client.sendText(from, 'maap untuk sekarang gabisa dimasukin ke grup karna sudah banyak, coba hubungi pembuat bot ini biar bisa ditambahin heuheu ( ⇀‸↼‶ )').then(() => client.leaveGroup(chat.groupMetadata.id))
+        // let totMem = await chat.groupMetadata.participants.length
+        // if (totMem >= 1) client.sendText(chat.groupMetadata.id, `Halo rakyat grup ${chat.contact.name} terimakasih sudah menginvite bot ini, untuk melihat menu silahkan kirim *#menu*`)
     })
 
-    client.onIncomingCall(( async (call) => {
+    client.onIncomingCall((async (call) => {
         await client.sendText(call.peerJid, 'Maaf, saya tidak bisa menerima panggilan. nelpon = block!')
-        .then(() => client.contactBlock(call.peerJid))
+            .then(() => client.contactBlock(call.peerJid))
     }))
 }
 
-function noCache(module, cb = (a) => {}){
+function noCache(module, cb = (a) => {}) {
     console.log('Module', `'${module}'`, 'is now watched for changed')
     fs.watchFile(require.resolve(module), async () => {
         await uncache(require.resolve(module))
         cb(module)
-    })    
+    })
 }
 
 const uncache = (module = '.') => {
@@ -51,7 +55,7 @@ const uncache = (module = '.') => {
         try {
             delete require.cache[require.resolve(module)]
             resolve()
-        } catch(e) {
+        } catch (e) {
             reject(e)
         }
     })
