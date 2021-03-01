@@ -186,7 +186,7 @@ const msgHandler = async (client, message) => {
                         keepScale: true,
                         pack: 'gatau'
                     })
-                    if (type === 'video') return await client.sendMp4AsSticker(from, imageBase64, {
+                    if (type === 'video') return await client.sendMp4AsSticker(from, imageBase64, '', {
                         author: 'bot-alpin',
                         keepScale: true,
                         pack: 'gatau'
@@ -199,7 +199,7 @@ const msgHandler = async (client, message) => {
                         keepScale: true,
                         pack: 'gatau'
                     })
-                    if (quotedMsg.type === 'video') return await client.sendMp4AsSticker(from, imageBase64, {
+                    if (quotedMsg.type === 'video') return await client.sendMp4AsSticker(from, imageBase64, '', {
                         author: 'bot-alpin',
                         keepScale: true,
                         pack: 'gatau'
