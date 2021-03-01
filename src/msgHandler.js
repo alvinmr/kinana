@@ -185,18 +185,38 @@ const msgHandler = async (client, message) => {
                     console.log(message);
                     const mediaData = await decryptMedia(message, uaOverride)
                     const imageBase64 = `data:${mimetype};base64,${mediaData.toString('base64')}`
-                    if (type === 'image') return await client.sendImageAsSticker(from, imageBase64)
-                    if (type === 'video') return await client.sendMp4AsSticker(from, imageBase64)
+                    if (type === 'image') return await client.sendImageAsSticker(from, imageBase64, {
+                        author: 'bot-alpin',
+                        keepScale: true,
+                        pack: 'gatau'
+                    })
+                    if (type === 'video') return await client.sendMp4AsSticker(from, imageBase64, {
+                        author: 'bot-alpin',
+                        keepScale: true,
+                        pack: 'gatau'
+                    })
                 } else if (quotedMsg && quotedMsg.type == 'image' || quotedMsg.type == 'video') {
                     const mediaData = await decryptMedia(quotedMsg, uaOverride)
                     const imageBase64 = `data:${quotedMsg.mimetype};base64,${mediaData.toString('base64')}`
-                    if (quotedMsg.type === 'image') return await client.sendImageAsSticker(from, imageBase64)
-                    if (quotedMsg.type === 'video') return await client.sendMp4AsSticker(from, imageBase64)
+                    if (quotedMsg.type === 'image') return await client.sendImageAsSticker(from, imageBase64, {
+                        author: 'bot-alpin',
+                        keepScale: true,
+                        pack: 'gatau'
+                    })
+                    if (quotedMsg.type === 'video') return await client.sendMp4AsSticker(from, imageBase64, {
+                        author: 'bot-alpin',
+                        keepScale: true,
+                        pack: 'gatau'
+                    })
                 } else if (args.length === 2) {
                     const url = args[1]
                     if (isUrl(url)) {
                         await client.sendStickerfromUrl(from, url, {
                                 method: 'get'
+                            }, {
+                                author: 'bot-alpin',
+                                keepScale: true,
+                                pack: 'gatau'
                             })
                             .catch(err => console.log('Caught exception: ', err))
                     } else {
@@ -207,39 +227,6 @@ const msgHandler = async (client, message) => {
                 }
                 break;
 
-            case '#stikergif':
-            case '#stickergif':
-            case '#gifstiker':
-            case '#gifsticker':
-                if (args.length === 1) return client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
-                const url = body.slice(11)
-                const isGiphy = url.match(new RegExp(/https?:\/\/(www\.)?giphy.com/, 'gi'))
-                const isMediaGiphy = url.match(new RegExp(/https?:\/\/media.giphy.com\/media/, 'gi'))
-                if (isGiphy) {
-                    const getGiphyCode = url.match(new RegExp(/(\/|\-)(?:.(?!(\/|\-)))+$/, 'gi'))
-                    if (!getGiphyCode) {
-                        return client.reply(from, 'Gagal mengambil kode giphy', id)
-                    }
-                    const giphyCode = getGiphyCode[0].replace(/[-\/]/gi, '')
-                    const smallGifUrl = 'https://media.giphy.com/media/' + giphyCode + '/giphy-downsized.gif'
-                    await client.sendGiphyAsSticker(from, smallGifUrl).then(() => {
-                        client.sendText(from, 'Here\'s your sticker')
-                        console.log(`Sticker Processed for ${processTime(t, moment())} Second`)
-                    }).catch((err) => console.log(err))
-                } else if (isMediaGiphy) {
-                    const gifUrl = url.match(new RegExp(/(giphy|source).(gif|mp4)/, 'gi'))
-                    if (!gifUrl) {
-                        return client.reply(from, 'Gagal mengambil kode giphy', id)
-                    }
-                    const smallGifUrl = url.replace(gifUrl[0], 'giphy-downsized.gif')
-                    client.sendGiphyAsSticker(from, smallGifUrl).then(() => {
-                        client.sendText(from, 'Here\'s your sticker')
-                        console.log(`Sticker Processed for ${processTime(t, moment())} Second`)
-                    }).catch((err) => console.log(err))
-                } else {
-                    await client.reply(from, 'maaf, untuk saat ini sticker gif hanya bisa menggunakan link dari giphy.  [Giphy Only]', id)
-                }
-                break;
 
 
             case '#translate':
