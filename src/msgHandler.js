@@ -500,6 +500,7 @@ const msgHandler = async (client, message) => {
                     var fam = await axios.get(`https://lolhuman.herokuapp.com/api/tebak/family100?apikey=${process.env.API_KEY}`)
 
                     var dataJawaban = Object.values(fam.data.result.aswer).map(value => value.toLowerCase())
+                    dataJawaban[0].split(',')
                     console.log(dataJawaban);
                     var dataSoal = fam.data.result.question
                     family.push({
