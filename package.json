@@ -7,7 +7,7 @@
     "start": "node src/index.js"
   },
   "author": "Alvin",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@open-wa/wa-automate": "^3.6.13",
     "@open-wa/wa-decrypt": "^2.0.1",

@@ -298,7 +298,7 @@ const msgHandler = async (client, message) => {
 
             case '#kecocokan':
                 if (args.length === 1) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
-                if (!command.includes('|')) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
+                if (!body.includes('|')) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
                 var listNama = body.slice(12).split('|').map(isi => isi.trim())
                 axios.get(`https://lolhuman.herokuapp.com/api/jodoh/${listNama[0]}/${listNama[1]}?apikey=${process.env.API_KEY}`)
                     .then(async (res) => {
