@@ -140,6 +140,8 @@ const msgHandler = async (client, message) => {
                     } else {
                         await client.sendTextWithMentions(from, jawaban)
                     }
+                } else {
+                    await client.reply(from, `${commands.toLowerCase()} tidak ada dalam list jawaban`, id)
                 }
             }
         }
@@ -298,11 +300,7 @@ const msgHandler = async (client, message) => {
                 const nama2 = args[3]
                 axios.get(`https://lolhuman.herokuapp.com/api/jodoh/${nama1}/${nama2}?apikey=${process.env.API_KEY}`)
                     .then(async (res) => {
-                        var hasilJodoh = `Hasilnya adalah :
-                        Positif : ${res.data.result.positif}
-                        Negatif : ${res.data.result.negatif}
-                        
-                        Deskripsi : ${res.data.result.deskripsi}`
+                        var hasilJodoh = `Hasilnya adalah : \nPositif : ${res.data.result.positif}\nNegatif : ${res.data.result.negatif}\n\nDeskripsi : ${res.data.result.deskripsi}`
                         await client.reply(from, hasilJodoh, id)
                     })
                     .catch(async () => {
@@ -449,6 +447,7 @@ const msgHandler = async (client, message) => {
                 const search = body.slice(6)
                 if (search.match(new RegExp(/(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/?.*(?:watch|embed)?(?:.*v=|v\/|\/)([\w-_]+)/gmi))) {
                     var reqApi = await axios.get(`https://lolhuman.herokuapp.com/api/ytaudio?apikey=${process.env.API_KEY}&url=${search}`)
+                    if (reqApi.data.result.info.duration >= '00:06:00') return await client.reply(from, 'musiknya kepanjangan, coba yang lain ya', id)
                     try {
                         client.reply(from, `Searching :  *"${reqApi.data.result.title}"* \nTunggu bentar ya`, id)
                         await axios.get(reqApi.data.result.audio.link[3].link, {
@@ -488,7 +487,7 @@ const msgHandler = async (client, message) => {
             case '#family100':
                 if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
                 if (family.some(e => e.groupId === groupId)) {
-                    await client.sendText(from, 'Game family 100 sudah dimulai. ketik *#nyerah* untuk menghentikan permainan')
+                    await client.reply(from, 'Game family 100 sudah dimulai. ketik *#nyerah* untuk menghentikan permainan', id)
                 } else {
                     var fam = await axios.get(`https://lolhuman.herokuapp.com/api/tebak/family100?apikey=${process.env.API_KEY}`)
 
@@ -508,38 +507,41 @@ const msgHandler = async (client, message) => {
                     })
                     var dataString = JSON.stringify(family)
                     require('fs').writeFileSync('./libs/family100.json', dataString)
-                    await client.sendText(from, 'Game Family 100 akan dimulai, ketik *#join* untuk bergabung dalam game')
+                    await client.reply(from, 'Game Family 100 akan dimulai, ketik *#join* untuk bergabung dalam game', id)
                 }
                 break;
 
             case '#join':
                 if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
-                if (family[index].start) return await client.reply(from, 'Sori yah kamu gabisa join soalnya lagi main xixi', id)
-                if (family.some(e => e.groupId === groupId)) {
-                    if (!family[index].userId.includes(sender.id)) {
-                        family[index].userId.push(sender.id)
-                        var dataString = JSON.stringify(family)
-                        require('fs').writeFileSync('./libs/family100.json', dataString)
-                        var user = `Pemain Family 100\n`
-                        var userId
-                        for (var i = 0; i < family[index].userId.length; i++) {
-                            userId = family[index].userId
-                            user += `\n${i+1}. @${userId[i].toString().replace(/@c.us/g, '')}`
+                try {
+                    if (family[index].start) return await client.reply(from, 'Sori yah kamu gabisa join soalnya lagi main xixi', id)
+                    if (family.some(e => e.groupId === groupId)) {
+                        if (!family[index].userId.includes(sender.id)) {
+                            family[index].userId.push(sender.id)
+                            var dataString = JSON.stringify(family)
+                            require('fs').writeFileSync('./libs/family100.json', dataString)
+                            var user = `Pemain Family 100\n`
+                            var userId
+                            for (var i = 0; i < family[index].userId.length; i++) {
+                                userId = family[index].userId
+                                user += `\n${i+1}. @${userId[i].toString().replace(/@c.us/g, '')}`
+                            }
+                            user += `\nTunggu yang lain dulu yuk, terus ketik *#start* buat mulai yah`
+                            await client.sendTextWithMentions(from, user)
+                        } else {
+                            await client.reply(from, 'kamu udah gabung hey', id)
                         }
-                        user += `\nTunggu yang lain dulu yuk, terus ketik *#start* buat mulai yah`
-                        await client.sendTextWithMentions(from, user)
-                    } else {
-                        await client.sendText(from, 'kamu udah gabung hey')
                     }
-                } else {
-                    await client.sendText(from, 'ketik *#family100* dulu dong')
+                } catch {
+                    await client.reply(from, 'ketik *#fam* dulu dong buat membuat room', id)
                 }
+
                 break;
 
             case '#start':
                 if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
-                if (family[index].start && !family[index].userId.includes(sender.id)) return await client.sendText(from, 'udah dimulai gamenya gan, tunggu nanti waktu selesai ya haha')
-                if (!family[index].start) {
+                try {
+                    if (family[index].start && !family[index].userId.includes(sender.id)) return await client.reply(from, 'udah dimulai gamenya gan, tunggu nanti waktu selesai ya haha', id)
                     if (family[index].userId.includes(sender.id)) {
                         if (family[index].userId.length) {
                             family[index].start = true
@@ -554,11 +556,12 @@ const msgHandler = async (client, message) => {
                             var dataString = JSON.stringify(family)
                             require('fs').writeFileSync('./libs/family100.json', dataString)
                         } else {
-                            await client.sendText(from, 'kayaknya peserta dalam game belum ada nih. ketik *#join* buat gabung')
+                            await client.reply(from, 'kayaknya peserta dalam game belum ada nih. ketik *#join* buat gabung', id)
                         }
                     }
-                } else {
-                    await client.sendText(from, 'Udah dimulai njer')
+
+                } catch {
+                    await client.reply(from, 'ketik *#fam* dulu dong buat membuat room', id)
                 }
                 break;
 
@@ -568,7 +571,7 @@ const msgHandler = async (client, message) => {
 
             case '#nyerah':
                 if (!isGroupMsg) return await client.reply(from, 'Perintah ini cuma bisa dipake dalam group', id)
-                if (!family[index].userId.includes(sender.id)) return await client.sendText(from, 'Sape elu main nyerah aja ga ikot maen')
+                if (!family[index].userId.includes(sender.id)) return await client.reply(from, 'Sape elu main nyerah aja ga ikot maen', id)
                 if (family.some(e => e.groupId && family[index].start)) {
                     if (family[index].userId.includes(sender.id)) {
                         // Random ngisi jawaban yang kosong
