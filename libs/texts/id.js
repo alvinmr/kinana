@@ -31,15 +31,23 @@ Lain-lain:
 Untuk mengartikan pesan menjadi bahasa yang ditentukan.
 Penggunaan: Balas/quote/reply pesan yang ingin kamu translate dengan _*#translate id*_ <- id adalah kode bahasa. kode bahasa dapat dilihat di *https://bit.ly/33FVldE*
 
-*#say* [id, jp, ar, en] _<teks>_
+*#say* [data basaha] _<teks>_
 Mengubah teks menjadi suara dengan batas teks 250 kata
 Penggunaan : #say id anak babi kalian
+
+*#memerandom*
+Mengirim random meme
+Penggunaan : #memerandom
+
+*#brainly *_<soal>_*
+Mencarikan hasil dari soal yang pingin kamu cari
+Penggunaan : #brainly siapa penemu bola lampu
 
 *#wiki* _<kata kunci>_
 Mencari penjelasan berdasarkan wikipedia sesuai dengan kata kunci yang dikirimkan
 Penggunaan : #wiki anjing
 
-*#google* _<kata kunci>_
+*#google* _<kata kunci>_ (*TIDAK AKTIP*)
 Mencari penjelasan berdasarkan google search sesuai dengan kata kunci yang dikirimkan
 Penggunaan : #google anjing
 
@@ -51,7 +59,7 @@ Penggunaan : #arti yanto
 Mengecek kecocokan pasangan berdasarkan nama
 Penggunaan : #kecocokan jodi | akbar
 
-*#zodiac* _<zodiac>_ 
+*#zodiac* _<zodiac>_ (*TIDAK AKTIP*)
 Ramalan zodiac harian
 Penggunaan : #zodiac aries
 
@@ -72,7 +80,7 @@ mengirimkan file lagu sesuai perintahmu
 Penggunaan : #play apa elo tega
 
 *#twt* _<link post twitter>_
-mendownload postingan video / foto di twitter
+mendownload postingan video di twitter
 Penggunaan : #twt https://twitter.com/txtdrpemerintah/status/1335928302939242497
 
 *#ig* _<link post ig>_

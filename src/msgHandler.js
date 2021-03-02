@@ -348,6 +348,19 @@ const msgHandler = async (client, message) => {
                     })
                 break;
 
+            case '#brainly':
+                var soal = body.slice(9)
+                await axios.get(`https://lolhuman.herokuapp.com/api/brainly?apikey=${process.env.API_KEY}&query=${soal}`)
+                    .then(async (res) => {
+                        var jawabanBrainly = 'Hasil Jawaban Brainly\n'
+                        for (let index = 0; index < res.data.result.length; index++) {
+                            jawabanBrainly += `\n[${index+1}] ${res.data.result[index].title}\nUrl : ${res.data.result[index].url}\n`
+                        }
+                        await client.reply(from, jawabanBrainly, id)
+                    })
+                    .catch(async () => await client.reply(from, 'ada yang salah, hubungi admin sana', id))
+                break;
+
             case '#say':
                 var googleTTS = require('google-tts-api');
                 const dataTextUcap = body.slice(9)
