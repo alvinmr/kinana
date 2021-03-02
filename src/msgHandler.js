@@ -141,7 +141,7 @@ const msgHandler = async (client, message) => {
                         await client.sendTextWithMentions(from, jawaban)
                     }
                 } else {
-                    if (!commands.startWith('#')) {
+                    if (!commands.startsWith('#')) {
                         await client.reply(from, `${commands.toLowerCase()} tidak ada dalam list jawaban`, id)
                     }
                 }
