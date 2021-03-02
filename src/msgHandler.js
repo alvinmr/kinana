@@ -141,7 +141,9 @@ const msgHandler = async (client, message) => {
                         await client.sendTextWithMentions(from, jawaban)
                     }
                 } else {
-                    await client.reply(from, `${commands.toLowerCase()} tidak ada dalam list jawaban`, id)
+                    if (commands != '#nyerah') {
+                        await client.reply(from, `${commands.toLowerCase()} tidak ada dalam list jawaban`, id)
+                    }
                 }
             }
         }
@@ -271,7 +273,7 @@ const msgHandler = async (client, message) => {
                 if (args.length === 1) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
                 var nama = body.slice(6)
 
-                axios.get(`https://api.be-line.me/primbon/nama?nama=${nama}`)
+                axios.get(`https://lolhuman.herokuapp.com/api/artinama?apikey=${process.env.API_KEY}&nama=${nama}`)
                     .then(async (res) => {
                         await client.reply(from, `Nama : ${nama}\n${res.data.result}`, id)
                     })
@@ -337,6 +339,13 @@ const msgHandler = async (client, message) => {
                         await client.reply(from, result, id)
                     })
                     .catch((err) => console.log(err))
+                break;
+
+            case '#memerandom':
+                await client.sendImage(from, `https://lolhuman.herokuapp.com/api/meme/memeindo?apikey=${process.env.API_KEY}`, 'meme.jpg', '', id)
+                    .catch(async () => {
+                        await client.reply(from, 'Kayanya ada yang salah, coba hubungi admin', id)
+                    })
                 break;
 
             case '#say':
