@@ -141,7 +141,7 @@ const msgHandler = async (client, message) => {
                         await client.sendTextWithMentions(from, jawaban)
                     }
                 } else {
-                    if (commands != '#nyerah') {
+                    if (!commands.startWith('#')) {
                         await client.reply(from, `${commands.toLowerCase()} tidak ada dalam list jawaban`, id)
                     }
                 }
@@ -284,6 +284,7 @@ const msgHandler = async (client, message) => {
 
             case '#zodiac':
             case '#zodiak':
+                return await client.reply(from, 'belom bisa fiturnya', id)
                 if (args.length === 1) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
                 var zodiak = args[1]
                 axios.get(`https://api.be-line.me/primbon/bintang?zodiac=${zodiak}`)
@@ -297,10 +298,9 @@ const msgHandler = async (client, message) => {
 
             case '#kecocokan':
                 if (args.length === 1) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
-                if (args[2] !== '|') return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
-                const nama1 = args[1]
-                const nama2 = args[3]
-                axios.get(`https://lolhuman.herokuapp.com/api/jodoh/${nama1}/${nama2}?apikey=${process.env.API_KEY}`)
+                if (!command.includes('|')) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
+                var listNama = body.slice(12).split('|').map(isi => isi.trim())
+                axios.get(`https://lolhuman.herokuapp.com/api/jodoh/${listNama[0]}/${listNama[1]}?apikey=${process.env.API_KEY}`)
                     .then(async (res) => {
                         var hasilJodoh = `Hasilnya adalah : \nPositif : ${res.data.result.positif}\nNegatif : ${res.data.result.negatif}\n\nDeskripsi : ${res.data.result.deskripsi}`
                         await client.reply(from, hasilJodoh, id)
@@ -328,6 +328,7 @@ const msgHandler = async (client, message) => {
 
             case '#cari':
             case '#google':
+                return await client.reply(from, 'belom bisa fiturnya', id)
                 if (args.length === 1) return await client.reply(from, 'kirim perintah *#google*\ncontoh : #google babi', id)
                 const queryGoogle = body.slice(8)
                 axios.get(`https://api.be-line.me/googlesearch?search=${queryGoogle}&page=1`)
@@ -341,6 +342,7 @@ const msgHandler = async (client, message) => {
                     .catch((err) => console.log(err))
                 break;
 
+            case '#gambarrandom':
             case '#memerandom':
                 await client.sendImage(from, `https://lolhuman.herokuapp.com/api/meme/memeindo?apikey=${process.env.API_KEY}`, 'meme.jpg', '', id)
                     .catch(async () => {
@@ -363,7 +365,7 @@ const msgHandler = async (client, message) => {
 
             case '#say':
                 var googleTTS = require('google-tts-api');
-                const dataTextUcap = body.slice(9)
+                const dataTextUcap = body.slice(8)
                 if (args.length === 1) return await client.reply(from, 'Kirim perintah *#say* [kode bahasa] [teks],\ncontoh *#say* id halo anak babi', id)
                 if (dataTextUcap.length >= 200) return await client.reply(from, 'jangan kebanyakan babi', id)
                 try {
