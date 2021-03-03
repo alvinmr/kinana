@@ -368,16 +368,15 @@ const msgHandler = async (client, message) => {
                 const dataTextUcap = body.slice(8)
                 if (args.length === 1) return await client.reply(from, 'Kirim perintah *#say* [kode bahasa] [teks],\ncontoh *#say* id halo anak babi', id)
                 if (dataTextUcap.length >= 200) return await client.reply(from, 'jangan kebanyakan babi', id)
-                try {
-                    googleTTS.getAudioBase64(dataTextUcap, {
+                googleTTS.getAudioBase64(dataTextUcap, {
                         lang: args[1],
                         slow: false,
                         host: 'https://translate.google.com',
                         timeout: 10000
-                    }).then((res) => client.sendPtt(from, `data:audio/mp4;base64,${res}`, id))
-                } catch (error) {
-                    await client.reply(from, 'sepertinya ada yang salah, list data kode bahasa https://cloud.google.com/speech-to-text/docs/languages', id)
-                }
+                    })
+                    .then((res) => client.sendPtt(from, `data:audio/mp4;base64,${res}`, id))
+                    .catch(async () => await client.reply(from, 'sepertinya ada yang salah, list data kode bahasa https://cloud.google.com/speech-to-text/docs/languages', id))
+
 
                 break;
 
