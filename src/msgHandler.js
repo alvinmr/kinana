@@ -289,7 +289,7 @@ const msgHandler = async (client, message) => {
                 // return await client.reply(from, 'belom bisa fiturnya', id)
                 if (args.length === 1) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
                 var zodiak = args[1]
-                axios.get(`https://api.lolhuman.xyz/api/zodiak/${zodiak}?apikey=103c56ff987c2f4081818fae`)
+                axios.get(`https://api.lolhuman.xyz/api/zodiak/${zodiak}?apikey=${process.env.API_KEY}`)
                     .then(async (res) => {
                         client.sendImage(from, res.data.result.img, 'zodiak.jpg', `Zodiac : ${zodiak} \n${res.data.result.information}`, id)
                     })
