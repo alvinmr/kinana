@@ -275,7 +275,7 @@ const msgHandler = async (client, message) => {
                 if (args.length === 1) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
                 var nama = body.slice(6)
 
-                axios.get(`https://lolhuman.herokuapp.com/api/artinama?apikey=${process.env.API_KEY}&nama=${nama}`)
+                axios.get(`https://api.lolhuman.xyz/api/artinama?apikey=${process.env.API_KEY}&nama=${nama}`)
                     .then(async (res) => {
                         await client.reply(from, `Nama : ${nama}\n${res.data.result}`, id)
                     })
@@ -286,10 +286,10 @@ const msgHandler = async (client, message) => {
 
             case '#zodiac':
             case '#zodiak':
-                return await client.reply(from, 'belom bisa fiturnya', id)
+                // return await client.reply(from, 'belom bisa fiturnya', id)
                 if (args.length === 1) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
                 var zodiak = args[1]
-                axios.get(`https://api.be-line.me/primbon/bintang?zodiac=${zodiak}`)
+                axios.get(`https://api.lolhuman.xyz/api/zodiak/${zodiak}?apikey=103c56ff987c2f4081818fae`)
                     .then(async (res) => {
                         client.sendImage(from, res.data.result.img, 'zodiak.jpg', `Zodiac : ${zodiak} \n${res.data.result.information}`, id)
                     })
@@ -299,10 +299,11 @@ const msgHandler = async (client, message) => {
                 break;
 
             case '#kecocokan':
+                return await client.reply(from, 'belom bisa fiturnya', id)
                 if (args.length === 1) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
                 if (!body.includes('|')) return await client.reply(from, 'Maaf, format pesan salah silahkan periksa menu. [Wrong Format]', id)
                 var listNama = body.slice(12).split('|').map(isi => isi.trim())
-                axios.get(`https://lolhuman.herokuapp.com/api/jodoh/${listNama[0]}/${listNama[1]}?apikey=${process.env.API_KEY}`)
+                axios.get(`https://api.lolhuman.xyz/api/jodoh/${listNama[0]}/${listNama[1]}?apikey=${process.env.API_KEY}`)
                     .then(async (res) => {
                         var hasilJodoh = `Hasilnya adalah : \nPositif : ${res.data.result.positif}\nNegatif : ${res.data.result.negatif}\n\nDeskripsi : ${res.data.result.deskripsi}`
                         await client.reply(from, hasilJodoh, id)
@@ -346,7 +347,7 @@ const msgHandler = async (client, message) => {
 
             case '#gambarrandom':
             case '#memerandom':
-                await client.sendImage(from, `https://lolhuman.herokuapp.com/api/meme/memeindo?apikey=${process.env.API_KEY}`, 'meme.jpg', '', id)
+                await client.sendImage(from, `https://api.lolhuman.xyz/api/meme/memeindo?apikey=${process.env.API_KEY}`, 'meme.jpg', '', id)
                     .catch(async () => {
                         await client.reply(from, 'Kayanya ada yang salah, coba hubungi admin', id)
                     })
@@ -354,7 +355,7 @@ const msgHandler = async (client, message) => {
 
             case '#brainly':
                 var soal = body.slice(9)
-                await axios.get(`https://lolhuman.herokuapp.com/api/brainly?apikey=${process.env.API_KEY}&query=${soal}`)
+                await axios.get(`https://api.lolhuman.xyz/api/brainly?apikey=${process.env.API_KEY}&query=${soal}`)
                     .then(async (res) => {
                         var jawabanBrainly = 'Hasil Jawaban Brainly\n'
                         for (let index = 0; index < res.data.result.length; index++) {
@@ -428,7 +429,7 @@ const msgHandler = async (client, message) => {
                 break;
 
             case '#1cak':
-                await client.sendImage(from, `https://lolhuman.herokuapp.com/api/onecak?apikey=${process.env.API_KEY}`, 'meme.jpg', '', id)
+                await client.sendImage(from, `https://api.lolhuman.xyz/api/onecak?apikey=${process.env.API_KEY}`, 'meme.jpg', '', id)
                     .catch(async (err) => {
                         await client.reply(from, 'Kayanya ada yang salah, coba hubungi admin', id)
                     })
@@ -448,8 +449,8 @@ const msgHandler = async (client, message) => {
                 const linkTwt = args[1]
                 const isValidLink = linkTwt.match(new RegExp(/http(?:s)?:\/\/(?:www\.)?twitter\.com\/([a-zA-Z0-9_]+)/))
                 if (!isValidLink) return await client.reply(from, 'hayo bukan link post twitter nih hehehew. coba lagi', id)
-                const twt = await axios.get(`https://lolhuman.herokuapp.com/api/twitter?apikey=${process.env.API_KEY}&url=${linkTwt}`)
-                const media = twt.data.result[0]
+                const twt = await axios.get(`https://api.lolhuman.xyz/api/twitter?apikey=${process.env.API_KEY}&url=${linkTwt}`)
+                const media = twt.data.result.link[1]
                 if (!media) return await client.reply(from, 'sori kaka fitur ini lagi limit. biar ga sering limit, kuy donasi ke https://saweria.co/alvinmr', id)
                 if (media.type == 'mp4') {
                     await client.sendFileFromUrl(from, media.link, 'twt.mp4', 'Nih vidnya', id)
@@ -461,21 +462,30 @@ const msgHandler = async (client, message) => {
             case '#ig':
                 if (args.length === 1) return await client.reply(from, 'kirim perintah *#ig*\ncontoh : #ig https://www.instagram.com/p/CJi8O9TH1ky/', id)
                 const linkIg = args[1]
-                const isValidLinkIg = linkIg.match(new RegExp(/(https?:\/\/(?:www\.)?instagram\.com\/p\/([^/?#&]+)).*/g))
-                if (!isValidLinkIg) return await client.reply(from, 'hayo bukan link post Instagram nih hehehew. coba lagi', id)
-                const ig = await axios.get(`https://lolhuman.herokuapp.com/api/instagram?apikey=${process.env.API_KEY}&url=${linkIg}`)
+                // const isValidLinkIg = linkIg.match(new RegExp(/(https?:\/\/(?:www\.)?instagram\.com\/p\/([^/?#&]+)).*/g))
+                // if (!isValidLinkIg) return await client.reply(from, 'hayo bukan link post Instagram nih hehehew. coba lagi', id)
+                const ig = await axios.get(`https://api.lolhuman.xyz/api/instagram?apikey=${process.env.API_KEY}&url=${linkIg}`)
                 if (ig.data.status != 200) return await client.reply(from, 'sori kaka fitur ini lagi limit. biar ga sering limit, kuy donasi ke https://saweria.co/alvinmr', id)
-                await client.sendImage(from, ig.data.result, 'ig.jpg', 'Nih photonya', id)
+                for (let i = 0; i < ig.data.result.length; i++) {
+                    const media = ig.data.result[i]
+                    if (media.type == 'image') {
+                        await client.sendImageFromUrl(from, media, 'ig.jpg', 'Nih Potonya', id)
+                    } else if (media.type == 'video') {
+                        await client.sendFileFromUrl(from, media, 'ig.mp4', 'Nih vidnya', id)
+                    }
+                }
+
+                // await client.sendImage(from, ig.data.result, 'ig.jpg', 'Nih photonya', id)
                 break;
 
             case '#play':
                 const search = body.slice(6)
                 if (search.match(new RegExp(/(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/?.*(?:watch|embed)?(?:.*v=|v\/|\/)([\w-_]+)/gmi))) {
-                    var reqApi = await axios.get(`https://lolhuman.herokuapp.com/api/ytaudio?apikey=${process.env.API_KEY}&url=${search}`)
+                    var reqApi = await axios.get(`https://api.lolhuman.xyz/api/ytaudio?apikey=${process.env.API_KEY}&url=${search}`)
                     if (reqApi.data.result.info.duration >= '00:06:00') return await client.reply(from, 'musiknya kepanjangan, coba yang lain ya', id)
                     try {
                         client.reply(from, `Searching :  *"${reqApi.data.result.title}"* \nTunggu bentar ya`, id)
-                        await axios.get(reqApi.data.result.audio.link[3].link, {
+                        await axios.get(reqApi.data.result.link.link, {
                             responseType: 'arraybuffer'
                         }).then(res => client.sendPtt(from, `data:audio/mp4;base64,${Buffer.from(res.data, 'binary').toString('base64')}`, id))
                     } catch (error) {
@@ -483,11 +493,11 @@ const msgHandler = async (client, message) => {
                         console.log(error);
                     }
                 } else {
-                    var reqApi = await axios.get(`https://lolhuman.herokuapp.com/api/ytplay?apikey=${process.env.API_KEY}&query=${search}`)
+                    var reqApi = await axios.get(`https://api.lolhuman.xyz/api/ytplay?apikey=${process.env.API_KEY}&query=${search}`)
                     if (reqApi.data.result.info.duration >= '00:06:00') return await client.reply(from, 'musiknya kepanjangan, coba yang lain ya', id)
                     try {
                         client.reply(from, `Searching :  *"${reqApi.data.result.info.title}"* \nTunggu bentar ya`, id)
-                        await axios.get(reqApi.data.result.audio[4].link, {
+                        await axios.get(reqApi.data.result.audio.link, {
                             responseType: 'arraybuffer'
                         }).then(res => client.sendPtt(from, `data:audio/mp4;base64,${Buffer.from(res.data, 'binary').toString('base64')}`, id))
                     } catch (error) {
