@@ -9,7 +9,7 @@
   "author": "Alvin",
   "license": "MIT",
   "dependencies": {
-    "@open-wa/wa-automate": "^3.6.13",
+    "@open-wa/wa-automate": "^4.30.0",
     "@open-wa/wa-decrypt": "^2.0.1",
     "axios": "^0.20.0",
     "chalk": "^4.1.0",

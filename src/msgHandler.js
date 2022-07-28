@@ -133,7 +133,9 @@ const msgHandler = async (client, message) => {
                         }
                         var menang = getKeysWithHighestValue(family[index].score)
                         console.log(menang);
-                        await client.sendTextWithMentions(from, `${jawaban}\n\nSelamat!! berhasil terjawab semua, pemenangnya adalah @${menang.toString().replace(/@c.us/g, '')} dengan berhasil menjawab ${family[index].score[menang]}`)
+                        var imgLink = sender.profilePicThumbObj.eurl || 'https://trimelive.com/wp-content/uploads/2020/12/gambar-Wa-1.png'
+                        await client.sendImage(from, imgLink, 'file.png')
+                        await client.sendTextWithMentions(from, `${jawaban}\n\nSelamat!! berhasil terjawab semua, pemenangnya adalah @${menang.toString().replace(/@c.us/g, '')} dengan berhasil menjawab ${family[index].score[menang]} jawaban`)
                         family.splice(index, 1)
                         var dataString = JSON.stringify(family)
                         require('fs').writeFileSync('./libs/family100.json', dataString)
@@ -212,12 +214,12 @@ const msgHandler = async (client, message) => {
                     const url = args[1]
                     if (isUrl(url)) {
                         await client.sendStickerfromUrl(from, url, {
-                                method: 'get'
-                            }, {
-                                author: 'bot-alpin',
-                                keepScale: true,
-                                pack: 'gatau'
-                            })
+                            method: 'get'
+                        }, {
+                            author: 'bot-alpin',
+                            keepScale: true,
+                            pack: 'gatau'
+                        })
                             .catch(err => console.log('Caught exception: ', err))
                     } else {
                         await client.reply(from, mess.error.Iv, id)
@@ -356,7 +358,7 @@ const msgHandler = async (client, message) => {
                     .then(async (res) => {
                         var jawabanBrainly = 'Hasil Jawaban Brainly\n'
                         for (let index = 0; index < res.data.result.length; index++) {
-                            jawabanBrainly += `\n[${index+1}] ${res.data.result[index].title}\nUrl : ${res.data.result[index].url}\n`
+                            jawabanBrainly += `\n[${index + 1}] ${res.data.result[index].title}\nUrl : ${res.data.result[index].url}\n`
                         }
                         await client.reply(from, jawabanBrainly, id)
                     })
@@ -369,11 +371,11 @@ const msgHandler = async (client, message) => {
                 if (args.length === 1) return await client.reply(from, 'Kirim perintah *#say* [kode bahasa] [teks],\ncontoh *#say* id halo anak babi', id)
                 if (dataTextUcap.length >= 200) return await client.reply(from, 'jangan kebanyakan babi', id)
                 googleTTS.getAudioBase64(dataTextUcap, {
-                        lang: args[1],
-                        slow: false,
-                        host: 'https://translate.google.com',
-                        timeout: 10000
-                    })
+                    lang: args[1],
+                    slow: false,
+                    host: 'https://translate.google.com',
+                    timeout: 10000
+                })
                     .then((res) => client.sendPtt(from, `data:audio/mp4;base64,${res}`, id))
                     .catch(async () => await client.reply(from, 'sepertinya ada yang salah, list data kode bahasa https://cloud.google.com/speech-to-text/docs/languages', id))
 
@@ -435,9 +437,9 @@ const msgHandler = async (client, message) => {
             case '#bot':
                 const text = body.slice(5)
                 if (args.length === 1) return await client.reply(from, 'kirim perintah *#bot*\ncontoh : #bot maen yu', id)
-                const simi = await axios.get(`https://lolhuman.herokuapp.com/api/simi?apikey=${process.env.API_KEY}&text=${text}`)
-                if (simi.data.status != 200) return await client.reply(from, 'sori kaka fitur ini lagi limit. biar ga sering limit, kuy donasi ke https://saweria.co/alvinmr', id)
-                await client.reply(from, simi.data.result, id)
+                const simi = await axios.get(`https://api.simsimi.net/v2/?text=${text}&lc=id&cf=false`)
+                // if (simi.data.status != 200) return await client.reply(from, 'sori kaka fitur ini lagi limit. biar ga sering limit, kuy donasi ke https://saweria.co/alvinmr', id)
+                await client.reply(from, simi.data.success, id)
                 break;
 
             case '#twt':
@@ -512,9 +514,9 @@ const msgHandler = async (client, message) => {
                 if (family.some(e => e.groupId === groupId)) {
                     await client.reply(from, 'Game family 100 sudah dimulai. ketik *#nyerah* untuk menghentikan permainan', id)
                 } else {
-                    var fam = await axios.get(`https://lolhuman.herokuapp.com/api/tebak/family100?apikey=${process.env.API_KEY}`)
+                    var fam = await axios.get(`https://api.lolhuman.xyz/api/tebak/family100?apikey=${process.env.API_KEY}`)
 
-                    var dataJawaban = Object.values(fam.data.result.aswer).map(value => value.toLowerCase())
+                    var dataJawaban = Object.values(fam.data.result.answer).map(value => value.toLowerCase())
                     dataJawaban[0].split(',')
                     console.log(dataJawaban);
                     var dataSoal = fam.data.result.question
@@ -547,7 +549,7 @@ const msgHandler = async (client, message) => {
                             var userId
                             for (var i = 0; i < family[index].userId.length; i++) {
                                 userId = family[index].userId
-                                user += `\n${i+1}. @${userId[i].toString().replace(/@c.us/g, '')}`
+                                user += `\n${i + 1}. @${userId[i].toString().replace(/@c.us/g, '')}`
                             }
                             user += `\nTunggu yang lain dulu yuk, terus ketik *#start* buat mulai yah`
                             await client.sendTextWithMentions(from, user)
@@ -629,7 +631,7 @@ const msgHandler = async (client, message) => {
                 }
                 break;
 
-                // Fitur group
+            // Fitur group
             case '#kick':
                 if (!isGroupMsg) return await client.reply(from, 'mau ngapain make command ini ? ini bukan grup woi', id)
                 if (!isGroupAdmins) return await client.reply(from, 'ups cuma bisa admin grup xixixi', id)
